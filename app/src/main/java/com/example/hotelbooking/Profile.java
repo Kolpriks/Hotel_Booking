@@ -13,4 +13,9 @@ public class Profile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
     }
+    public void toLogin(View view){
+        Intent intent = new Intent(this, Login.class);
+        startActivity(intent);
+    }
+
 }
