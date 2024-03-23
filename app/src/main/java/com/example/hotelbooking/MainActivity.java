@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             DbHelper dbHelper = new DbHelper(this);
             dbInit(dbHelper);
+            // SQLiteDatabase db = dbHelper.getWritableDatabase();
         } catch (SQLiteException e) {
             Log.e("MainActivity.onCreate", "Error whith opening db");
         }
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
                 String [] cities = {"Москва", "Санкт-Питербург", "Казань", "Тверь", "Калуга", "Волгоград"};
                 long cityId;
+                long inputId;
                 try {
                     ContentValues values = new ContentValues();
                     for (String city : cities) {
@@ -46,13 +48,16 @@ public class MainActivity extends AppCompatActivity {
                         if (cityId != -1) {
                             values.put("cityId", cityId);
                             values.put("places", 2);
-                            db.insert("room", null, values);
+                            inputId = db.insert("room", null, values);
+                            Log.v("dbInit", "FirstRoomInput: " + inputId);
                             values.remove("places");
                             values.put("places", 3);
-                            db.insert("room", null, values);
+                            inputId = db.insert("room", null, values);
+                            Log.v("dbInit", "SecondRoomInput: " + inputId);
                             values.remove("places");
                             values.put("places", 4);
-                            db.insert("room", null, values);
+                            inputId = db.insert("room", null, values);
+                            Log.v("dbInit", "ThirdRoomInput: " + inputId);
                             values.remove("places");
                             values.remove("cityId");
                             Log.v("After rooms in", "Rooms incerted");
@@ -62,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Init internal error", Toast.LENGTH_SHORT).show();
                 } finally {
                     // Закрываем БД
-                    // db.close();
+                    db.close();
                 }
             }
         }).start();
@@ -79,13 +84,16 @@ public class MainActivity extends AppCompatActivity {
         String departure = ((EditText) findViewById(R.id.editTextDeparture)).getText().toString();
         String guests = ((EditText) findViewById(R.id.editTextGuests)).getText().toString();
 
-        String message = " " + city + "\n" +
-                " " + arrive +
-                " " + departure +
-                " " + guests;
+//        String message = " " + city + "\n" +
+//                " " + arrive +
+//                " " + departure +
+//                " " + guests;
 
         Intent intent = new Intent(this, HotelsResults.class);
-        intent.putExtra("info", message);
+        intent.putExtra("city", city);
+        intent.putExtra("arrive", arrive);
+        intent.putExtra("departure", departure);
+        intent.putExtra("guests", guests);
         startActivity(intent);
     }
 }

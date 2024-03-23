@@ -17,8 +17,8 @@ public class DbHelper extends SQLiteOpenHelper {
 
     private static final String CREATE_TABLE_ROOM = "CREATE TABLE room (" +
             "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-            "places INTEGER," +
-            "cityId INTEGER," +
+            "places INTEGER NOT NULL," +
+            "cityId INTEGER NOT NULL," +
             // Foreign Key Constraint to ensure integrity
             "FOREIGN KEY(cityId) REFERENCES city(id)" +
             ")";
