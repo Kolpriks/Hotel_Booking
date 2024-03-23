@@ -31,7 +31,7 @@ public class HotelsResults extends AppCompatActivity {
 
         ArrayList<HotelRoom> rooms = getRooms(intent, dbHelper);
 
-        // Temporary code inside: if { ... }
+        // Temporary code inside: if { ... } must be Recycle/List View
         if (rooms != null) {
             TextView textView = findViewById(R.id.textViewInfo);
             String rresult =  rooms.get(0).city + " \n" + rooms.get(0).places;
