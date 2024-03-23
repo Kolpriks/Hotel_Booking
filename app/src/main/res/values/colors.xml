@@ -4,5 +4,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="main">#00BF6F</color>
     <color name="buttonPressed">#006633</color>
+    <color name="link">#031EC5</color>
 
 </resources>
