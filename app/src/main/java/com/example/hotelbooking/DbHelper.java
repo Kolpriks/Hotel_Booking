@@ -12,30 +12,21 @@ public class DbHelper extends SQLiteOpenHelper {
     // SQL statement to create a new table
     private static final String CREATE_TABLE_CITY = "CREATE TABLE city (" +
             "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-            "name TEXT" +
-            ")";
-
-    private static final String CREATE_TABLE_HOTEL = "CREATE TABLE hotel (" +
-            "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-            "cityId INTEGER," +
-            "name TEXT," +
-            // Foreign Key Constraint to ensure integrity
-            "FOREIGN KEY(cityId) REFERENCES city(id)" +
+            "city TEXT" +
             ")";
 
     private static final String CREATE_TABLE_ROOM = "CREATE TABLE room (" +
             "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-            "hotelId INTEGER," +
             "places INTEGER," +
+            "cityId INTEGER," +
             // Foreign Key Constraint to ensure integrity
-            "FOREIGN KEY(hotelId) REFERENCES hotel(id)" +
+            "FOREIGN KEY(cityId) REFERENCES city(id)" +
             ")";
 
     private static final String CREATE_TABLE_RESERVATIONS = "CREATE TABLE reservations (" +
             "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-            "month TEXT," +
-            "inDay INTEGER," +
-            "outDay INTEGER," +
+            "inDay DATE," +
+            "outDay DATE," +
             "roomId INTEGER," +
             // Foreign Key Constraint to ensure integrity
             "FOREIGN KEY(roomId) REFERENCES room(id)" +
@@ -49,7 +40,6 @@ public class DbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         // Execute SQL statements to create multiple tables
         db.execSQL(CREATE_TABLE_CITY);
-        db.execSQL(CREATE_TABLE_HOTEL);
         db.execSQL(CREATE_TABLE_ROOM);
         db.execSQL(CREATE_TABLE_RESERVATIONS);
     }
@@ -58,7 +48,6 @@ public class DbHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop old tables if existed
         db.execSQL("DROP TABLE IF EXISTS city");
-        db.execSQL("DROP TABLE IF EXISTS hotel");
         db.execSQL("DROP TABLE IF EXISTS room");
         db.execSQL("DROP TABLE IF EXISTS reservations");
         // Create tables again

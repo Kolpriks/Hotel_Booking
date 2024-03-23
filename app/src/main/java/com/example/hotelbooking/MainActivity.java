@@ -1,24 +1,31 @@
 package com.example.hotelbooking;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        DbHelper dbHelper = new DbHelper(this);
+        try {
+            DbHelper dbHelper = new DbHelper(this);
+            dbInit(dbHelper);
+        } catch (SQLiteException e) {
+            Log.e("MainActivity.onCreate", "Error whith opening db");
+        }
+    }
 
-        // В фоновом потоке выполняем операцию добавления записи в БД
+    public void dbInit(DbHelper dbHelper) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -27,11 +34,32 @@ public class MainActivity extends AppCompatActivity {
 
                 dbHelper.onUpgrade(db, 1, 1);
 
+                String [] cities = {"Москва", "Санкт-Питербург", "Казань", "Тверь", "Калуга", "Волгоград"};
+                long cityId;
                 try {
-                    // Здесь ваш код для взаимодействия с БД, например, добавление записи
                     ContentValues values = new ContentValues();
-                    values.put("name", "Некий город");
-                    db.insert("city", null, values);
+                    for (String city : cities) {
+                        values.put("city", city);
+                        cityId = db.insert("city", null, values);
+                        values.remove("city");
+                        Log.v("After City in", "City incerted");
+                        if (cityId != -1) {
+                            values.put("cityId", cityId);
+                            values.put("places", 2);
+                            db.insert("room", null, values);
+                            values.remove("places");
+                            values.put("places", 3);
+                            db.insert("room", null, values);
+                            values.remove("places");
+                            values.put("places", 4);
+                            db.insert("room", null, values);
+                            values.remove("places");
+                            values.remove("cityId");
+                            Log.v("After rooms in", "Rooms incerted");
+                        }
+                    }
+                } catch(SQLiteException e) {
+                    Toast.makeText(MainActivity.this, "Init internal error", Toast.LENGTH_SHORT).show();
                 } finally {
                     // Закрываем БД
                     // db.close();
