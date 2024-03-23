@@ -7,84 +7,86 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class HotelsResults extends AppCompatActivity {
-
-    ArrayList<HotelRoom> rooms;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hotels_results);
+
         Intent intent = getIntent();
-
-
         DbHelper dbHelper = new DbHelper(HotelsResults.this);
-        Log.v("HotelsResults.onCreate", "DbHelper Created");
-        rooms = getRooms(intent, dbHelper);
 
+        ArrayList<HotelRoom> rooms = getRooms(intent, dbHelper);
+
+        // Temporary code inside: if { ... }
         if (rooms != null) {
-            // TODO: Empty rooms realisation
-            for (HotelRoom room : rooms ){
-                Log.v("HotelsResults", room.getId() + "|" + room.getCityId() + "|" + room.getPlaces());
-            }
             TextView textView = findViewById(R.id.textViewInfo);
-            String rresult = rooms.get(0).id + " \n" +
-                    rooms.get(0).cityId + " \n" +
-                    rooms.get(0).places;
+            String rresult =  rooms.get(0).city + " \n" + rooms.get(0).places;
             textView.setText(rresult);
-        }
+            ImageView imageView = findViewById(R.id.imageView);
 
+            String path = Environment.getExternalStorageDirectory()+ "app/src/main/res/drawable/image" + rooms.get(0).imgId + ".jpg";
+            File imgFile = new File(path);
+            if(imgFile.exists())
+            {
+                Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                imageView.setImageBitmap(myBitmap);
+            }
+        }
     }
 
     public ArrayList<HotelRoom> getRooms(Intent intent, DbHelper dbHelper) {
+
         ArrayList<HotelRoom> result = new ArrayList<HotelRoom>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        // TODO: Maybe compose into model object
         String city = intent.getStringExtra("city");
         String arrive = intent.getStringExtra("arrive");
         String departure = intent.getStringExtra("departure");
         String guests = intent.getStringExtra("guests");
 
-
-        // String logOut = city + "|" + arrive + "|" + departure + "|" + guests + "|";
-        // Log.v("HotelResults", logOut);
-
         if (city.isEmpty() && arrive.isEmpty() && departure.isEmpty() && guests.isEmpty()) {
-            // Log.v("HotelsResults", "Inputed fields is empty");
-            Cursor cursor = db.query("room", new String[] {"id", "cityId", "places"},
-                    null, null,
-                    null, null, null);
 
-            // String cursorFromQuerry = cursor.toString();
-            // Log.v("HotelResults.AfterQuerry", cursorFromQuerry);
+            String sql = "SELECT room.id AS id, city.city, room.places, room.imgId " +
+                    "FROM room JOIN city " +
+                    "ON room.cityId = city.id";
+            Cursor cursor = db.rawQuery(sql, null);
 
             if (cursor != null && cursor.moveToFirst()) {
                 do {
-                    // Log.v("Cursor", "Cursor read cycle");
                     int numberIndex = cursor.getColumnIndex("id");
-                    int cityIdIndex = cursor.getColumnIndex("cityId");
+                    int cityIdIndex = cursor.getColumnIndex("city");
                     int placesIndex = cursor.getColumnIndex("places");
+                    int imgIdIndex = cursor.getColumnIndex("imgId");
 
-                    // String cursorLogs = numberIndex + "|" + cityIdIndex + "|" + placesIndex;
-                    // Log.v("HotelResults", cursorLogs);
-
-                    if (numberIndex != -1 && cityIdIndex != -1 && placesIndex != -1) {
-                        result.add(new HotelRoom(cursor.getInt(numberIndex), cursor.getInt(cityIdIndex), cursor.getInt(placesIndex)));
+                    if (numberIndex != -1 && cityIdIndex != -1 && placesIndex != -1 && imgIdIndex != -1) {
+                        result.add(new HotelRoom(cursor.getInt(numberIndex),
+                                cursor.getString(cityIdIndex),
+                                cursor.getInt(placesIndex),
+                                cursor.getInt(imgIdIndex)));
                     }
                 } while (cursor.moveToNext());
                 cursor.close();
                 return result;
             } else {
+                // TODO: Sort parced results by in and out time
                 if (cursor != null) {
                     cursor.close();
                 }
-                 // Номер отеля не найден
             }
         }
         return null;
