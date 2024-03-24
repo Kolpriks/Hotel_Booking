@@ -21,17 +21,16 @@ public class MainActivity extends AppCompatActivity {
             DbHelper dbHelper = new DbHelper(this);
             dbInit(dbHelper);
         } catch (SQLiteException e) {
-            Log.e("MainActivity.onCreate", "Error whith opening db");
+            Log.e("MainActivity.onCreate", "Error whith opening db whith error: " + e);
         }
     }
 
+    // Maybe put in some "presets" class
     public void dbInit(DbHelper dbHelper) {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                // Получаем объект SQLiteDatabase для записи в базу данных
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
-
                 dbHelper.onUpgrade(db, 1, 1);
 
                 String [] cities = {"Москва", "Санкт-Питербург", "Казань", "Тверь", "Калуга", "Волгоград"};
@@ -42,27 +41,35 @@ public class MainActivity extends AppCompatActivity {
                         values.put("city", city);
                         cityId = db.insert("city", null, values);
                         values.remove("city");
-                        Log.v("After City in", "City incerted");
                         if (cityId != -1) {
                             values.put("cityId", cityId);
+
                             values.put("places", 2);
+                            values.put("imgId", 1);
                             db.insert("room", null, values);
                             values.remove("places");
+                            values.remove("imgId");
+
                             values.put("places", 3);
+                            values.put("imgId", 2);
                             db.insert("room", null, values);
                             values.remove("places");
+                            values.remove("imgId");
+
                             values.put("places", 4);
+                            values.put("imgId", 3);
                             db.insert("room", null, values);
                             values.remove("places");
                             values.remove("cityId");
+                            values.remove("imgId");
+
                             Log.v("After rooms in", "Rooms incerted");
                         }
                     }
                 } catch(SQLiteException e) {
                     Toast.makeText(MainActivity.this, "Init internal error", Toast.LENGTH_SHORT).show();
                 } finally {
-                    // Закрываем БД
-                    // db.close();
+                    db.close();
                 }
             }
         }).start();
@@ -79,13 +86,12 @@ public class MainActivity extends AppCompatActivity {
         String departure = ((EditText) findViewById(R.id.editTextDeparture)).getText().toString();
         String guests = ((EditText) findViewById(R.id.editTextGuests)).getText().toString();
 
-        String message = " " + city + "\n" +
-                " " + arrive +
-                " " + departure +
-                " " + guests;
-
+        // TODO: Maybe compose to model object
         Intent intent = new Intent(this, HotelsResults.class);
-        intent.putExtra("info", message);
+        intent.putExtra("city", city);
+        intent.putExtra("arrive", arrive);
+        intent.putExtra("departure", departure);
+        intent.putExtra("guests", guests);
         startActivity(intent);
     }
 }

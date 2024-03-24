@@ -9,7 +9,7 @@ public class DbHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "hotelapp.db";
     private static final int DATABASE_VERSION = 1;
 
-    // SQL statement to create a new table
+    // TODO: Hotel delition methods, (maybe put here data querry methods from HotelResults), (maybe add NOT NULL constraints)
     private static final String CREATE_TABLE_CITY = "CREATE TABLE city (" +
             "id INTEGER PRIMARY KEY AUTOINCREMENT," +
             "city TEXT" +
@@ -17,8 +17,9 @@ public class DbHelper extends SQLiteOpenHelper {
 
     private static final String CREATE_TABLE_ROOM = "CREATE TABLE room (" +
             "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-            "places INTEGER," +
-            "cityId INTEGER," +
+            "places INTEGER NOT NULL," +
+            "cityId INTEGER NOT NULL," +
+            "imgId INTEGER NOT NULL," +
             // Foreign Key Constraint to ensure integrity
             "FOREIGN KEY(cityId) REFERENCES city(id)" +
             ")";
@@ -53,7 +54,4 @@ public class DbHelper extends SQLiteOpenHelper {
         // Create tables again
         onCreate(db);
     }
-
-
-    // Add your data access methods here
 }
