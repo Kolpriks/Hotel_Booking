@@ -1,6 +1,8 @@
 package com.example.hotelbooking;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -30,6 +32,25 @@ public class HotelsResults extends AppCompatActivity {
         DbHelper dbHelper = new DbHelper(HotelsResults.this);
 
         ArrayList<HotelRoom> rooms = getRooms(intent, dbHelper);
+
+        /////////////////////////////////////
+        RecyclerView recyclerView = findViewById(R.id.hotelCards);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        ArrayList<Item> items = new ArrayList<>();
+        items.add(new Item(R.drawable.image1, "В мире, где царит аромат черешни"));
+        items.add(new Item(R.drawable.image2, "В тени зелёных листьев лимонного деревай "));
+        items.add(new Item(R.drawable.image3, "В мире, где царит аромат черешни"));
+
+
+        // Добавьте другие элементы
+
+        MyAdapter adapter = new MyAdapter(this, items);
+        recyclerView.setAdapter(adapter);
+
+        /////////////////////////////////////
+
 
         // Temporary code inside: if { ... }
         if (rooms != null) {
