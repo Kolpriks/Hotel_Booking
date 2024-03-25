@@ -1,11 +1,13 @@
 package com.example.hotelbooking;
 
+import android.graphics.Bitmap;
+
 public class HotelRoom {
 
     public int id;
     public String city;
     public int places;
-    public int imgId;
+    int imgId;
 
     public HotelRoom(Integer id, String city, Integer places, Integer imgId) {
         this.id = id;
@@ -13,6 +15,7 @@ public class HotelRoom {
         this.places = places;
         this.imgId = imgId;
     }
+
 
     public int getId() {
         return this.id;
@@ -26,7 +29,5 @@ public class HotelRoom {
         return this.places;
     }
 
-    public int getImgId() {
-        return this.imgId;
-    }
+    public int getImgId() {return this.imgId;}
 }

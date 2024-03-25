@@ -11,6 +11,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -19,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 public class HotelsResults extends AppCompatActivity {
@@ -33,40 +35,12 @@ public class HotelsResults extends AppCompatActivity {
 
         ArrayList<HotelRoom> rooms = getRooms(intent, dbHelper);
 
-        /////////////////////////////////////
         RecyclerView recyclerView = findViewById(R.id.hotelCards);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        ArrayList<Item> items = new ArrayList<>();
-        items.add(new Item(R.drawable.image1, "В мире, где царит аромат черешни"));
-        items.add(new Item(R.drawable.image2, "В тени зелёных листьев лимонного деревай "));
-        items.add(new Item(R.drawable.image3, "В мире, где царит аромат черешни"));
-
-
-        // Добавьте другие элементы
-
-        MyAdapter adapter = new MyAdapter(this, items);
+        MyAdapter adapter = new MyAdapter(this, rooms);
         recyclerView.setAdapter(adapter);
-
-        /////////////////////////////////////
-
-
-        // Temporary code inside: if { ... }
-        if (rooms != null) {
-            TextView textView = findViewById(R.id.textViewInfo);
-            String rresult =  rooms.get(0).city + " \n" + rooms.get(0).places;
-            textView.setText(rresult);
-            ImageView imageView = findViewById(R.id.imageView);
-
-            String path = Environment.getExternalStorageDirectory()+ "app/src/main/res/drawable/image" + rooms.get(0).imgId + ".jpg";
-            File imgFile = new File(path);
-            if(imgFile.exists())
-            {
-                Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-                imageView.setImageBitmap(myBitmap);
-            }
-        }
     }
 
     public ArrayList<HotelRoom> getRooms(Intent intent, DbHelper dbHelper) {

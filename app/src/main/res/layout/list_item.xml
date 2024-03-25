@@ -24,7 +24,7 @@
         android:layout_height="41dp"
         android:layout_marginTop="256dp"
         android:layout_marginEnd="220dp"
-        android:text="nety tyt nichego poka eshe no budet obyazatelno"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
