@@ -26,8 +26,8 @@ public class DbHelper extends SQLiteOpenHelper {
 
     private static final String CREATE_TABLE_RESERVATIONS = "CREATE TABLE reservations (" +
             "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-            "inDay DATE," +
-            "outDay DATE," +
+            "inDay INTEGER," +
+            "outDay INTEGER," +
             "roomId INTEGER," +
             // Foreign Key Constraint to ensure integrity
             "FOREIGN KEY(roomId) REFERENCES room(id)" +

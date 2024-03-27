@@ -12,6 +12,8 @@ import android.database.sqlite.SQLiteException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.icu.util.Calendar;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -49,12 +51,15 @@ public class HotelsResults extends AppCompatActivity {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
         // TODO: Maybe compose into model object
-        String city = intent.getStringExtra("city");
-        String arrive = intent.getStringExtra("arrive");
-        String departure = intent.getStringExtra("departure");
-        String guests = intent.getStringExtra("guests");
+        BookingRequest bookingRequest = intent.getSerializableExtra("BR", BookingRequest.class);
 
-        if (city.isEmpty() && arrive.isEmpty() && departure.isEmpty() && guests.isEmpty()) {
+        Log.v("HotelsResults.getRooms", bookingRequest.getCity() + "|" + bookingRequest.getInDay() + "|" + bookingRequest.getOutDay() + "|" + bookingRequest.getGuests());
+        String city = bookingRequest.getCity();
+        long arrive = bookingRequest.getInDay();
+        long departure = bookingRequest.getOutDay();
+        int guests = bookingRequest.getGuests();
+
+        if (city.isEmpty() && guests == 1) {
 
             String sql = "SELECT room.id AS id, city.city, room.places, room.imgId " +
                     "FROM room JOIN city " +
