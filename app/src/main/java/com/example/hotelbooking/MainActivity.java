@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,12 +28,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        try {
-            DbHelper dbHelper = new DbHelper(this);
-            dbInit(dbHelper);
-        } catch (SQLiteException e) {
-            Log.e("MainActivity.onCreate", "Error whith opening db whith error: " + e);
-        }
 
         Button buttonInDate = findViewById(R.id.buttonInDay);
         Button buttonOutDate = findViewById(R.id.buttnOutDay);
@@ -53,7 +48,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Maybe put in some "presets" class
-    public void dbInit(DbHelper dbHelper) {
+    public void dbInit() {
+        DbHelper dbHelper = new DbHelper(this);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -108,12 +104,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    // TODO: datatype: yyyy-mm-dd and transfer data into seconds/miliseconds
     public void getInfo(View view){
         int places = 1;
         String city = ((EditText) findViewById(R.id.editTextCity)).getText().toString();
-        String arrive = ((EditText) findViewById(R.id.editTextArrive)).getText().toString();
-        String departure = ((EditText) findViewById(R.id.editTextDeparture)).getText().toString();
         String guests = ((EditText) findViewById(R.id.editTextGuests)).getText().toString();
 
         Log.v("MainActivity.getInfo", "|" + guests + "|");
@@ -162,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
         DatePickerDialog datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                EditText editText = findViewById(R.id.editTextArrive);
+                TextView editText = findViewById(R.id.TextArrive);
                 editText.setText(year + "." + month + "." + dayOfMonth);
                 SharedPreferences prefs = getSharedPreferences("inDay", MODE_PRIVATE);
                 SharedPreferences.Editor editor = prefs.edit();
@@ -184,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
         DatePickerDialog datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                EditText editText = findViewById(R.id.editTextDeparture);
+                TextView editText = findViewById(R.id.TextDeparture);
                 editText.setText(year + "." + month + "." + dayOfMonth);
                 SharedPreferences prefs = getSharedPreferences("outDay", MODE_PRIVATE);
                 SharedPreferences.Editor editor = prefs.edit();

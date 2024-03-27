@@ -96,4 +96,8 @@ public class HotelsResults extends AppCompatActivity {
         Intent intent = new Intent(this, Profile.class);
         startActivity(intent);
     }
+
+    public void backOnClaiming(View view) {
+        finish();
+    }
 }
