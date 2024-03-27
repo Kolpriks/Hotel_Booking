@@ -31,8 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             DbHelper dbHelper = new DbHelper(this);
-            dbInit(dbHelper);
-
+            Init init = new Init(dbHelper);
         } catch (SQLiteException e) {
             Log.e("MainActivity.onCreate", "Error whith connecting to database");
         }
@@ -57,86 +56,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Maybe put in some "presets" class
-    public void dbInit(DbHelper dbHelper) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                SQLiteDatabase db = dbHelper.getWritableDatabase();
-                dbHelper.onUpgrade(db, 1, 1);
-
-                String [] cities = {"Москва", "Санкт-Питербург", "Казань", "Тверь", "Калуга", "Волгоград"};
-                long cityId;
-                try {
-                    ContentValues values = new ContentValues();
-                    for (String city : cities) {
-                        values.put("city", city);
-                        cityId = db.insert("city", null, values);
-                        values.remove("city");
-                        if (cityId != -1) {
-                            values.put("cityId", cityId);
-
-                            values.put("places", 2);
-                            values.put("imgId", 1);
-                            db.insert("room", null, values);
-                            values.remove("places");
-                            values.remove("imgId");
-
-                            values.put("places", 3);
-                            values.put("imgId", 2);
-                            db.insert("room", null, values);
-                            values.remove("places");
-                            values.remove("imgId");
-
-                            values.put("places", 4);
-                            values.put("imgId", 3);
-                            db.insert("room", null, values);
-                            values.remove("places");
-                            values.remove("imgId");
-
-                            values.remove("cityId");
-
-                            Log.v("After rooms in", "Rooms incerted");
-                        }
-                    }
-
-                    values.put("email", "user1@mail.ru");
-                    values.put("name", "User1");
-                    values.put("password", "user1pwd");
-                    values.put("admin", 0);
-                    db.insert("users", null, values);
-                    values.remove("email");
-                    values.remove("name");
-                    values.remove("password");
-                    values.remove("admin");
-
-                    values.put("email", "user2@mail.ru");
-                    values.put("name", "User2");
-                    values.put("password", "user2pwd");
-                    values.put("admin", 0);
-                    db.insert("users", null, values);
-                    values.remove("email");
-                    values.remove("name");
-                    values.remove("password");
-                    values.remove("admin");
-
-                    values.put("email", "admin1@mail.ru");
-                    values.put("name", "Andmin1");
-                    values.put("password", "admin1pwd");
-                    values.put("admin", 1);
-                    db.insert("users", null, values);
-                    values.remove("email");
-                    values.remove("name");
-                    values.remove("password");
-                    values.remove("admin");
-
-                } catch(SQLiteException e) {
-                    Toast.makeText(MainActivity.this, "Init internal error", Toast.LENGTH_SHORT).show();
-                } finally {
-                    db.close();
-                }
-            }
-        }).start();
-    }
 
     public void toProfile(View view){
         Intent intent = new Intent(this, Profile.class);
