@@ -29,6 +29,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        try {
+            DbHelper dbHelper = new DbHelper(this);
+            dbInit(dbHelper);
+
+        } catch (SQLiteException e) {
+            Log.e("MainActivity.onCreate", "Error whith connecting to database");
+        }
+
+
         Button buttonInDate = findViewById(R.id.buttonInDay);
         Button buttonOutDate = findViewById(R.id.buttnOutDay);
 
@@ -48,8 +57,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Maybe put in some "presets" class
-    public void dbInit() {
-        DbHelper dbHelper = new DbHelper(this);
+    public void dbInit(DbHelper dbHelper) {
         new Thread(new Runnable() {
             @Override
             public void run() {

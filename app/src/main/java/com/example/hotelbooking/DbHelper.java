@@ -29,8 +29,18 @@ public class DbHelper extends SQLiteOpenHelper {
             "inDay INTEGER," +
             "outDay INTEGER," +
             "roomId INTEGER," +
+            "userId INTEGER," +
             // Foreign Key Constraint to ensure integrity
-            "FOREIGN KEY(roomId) REFERENCES room(id)" +
+            "FOREIGN KEY(roomId) REFERENCES room(id)," +
+            "FOREIGN KEY(userId) REFERENCES users(id)" +
+            ")";
+
+    private static final String CREATE_TABLE_USERS = "CREATE TABLE users (" +
+            "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+            "email TEXT NOT NULL UNIQUE," +
+            "name TEXT NOT NULL," +
+            "password TEXT NOT NULL," +
+            "admin TEXT NOT NULL" +
             ")";
 
     public DbHelper(Context context) {
@@ -42,6 +52,7 @@ public class DbHelper extends SQLiteOpenHelper {
         // Execute SQL statements to create multiple tables
         db.execSQL(CREATE_TABLE_CITY);
         db.execSQL(CREATE_TABLE_ROOM);
+        db.execSQL(CREATE_TABLE_USERS);
         db.execSQL(CREATE_TABLE_RESERVATIONS);
     }
 
@@ -50,6 +61,7 @@ public class DbHelper extends SQLiteOpenHelper {
         // Drop old tables if existed
         db.execSQL("DROP TABLE IF EXISTS city");
         db.execSQL("DROP TABLE IF EXISTS room");
+        db.execSQL("DROP TABLE IF EXISTS users");
         db.execSQL("DROP TABLE IF EXISTS reservations");
         // Create tables again
         onCreate(db);
