@@ -40,7 +40,7 @@ public class DbHelper extends SQLiteOpenHelper {
             "email TEXT NOT NULL UNIQUE," +
             "name TEXT NOT NULL," +
             "password TEXT NOT NULL," +
-            "admin TEXT NOT NULL" +
+            "admin INTEGER NOT NULL" +
             ")";
 
     public DbHelper(Context context) {

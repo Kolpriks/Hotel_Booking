@@ -91,12 +91,44 @@ public class MainActivity extends AppCompatActivity {
                             values.put("imgId", 3);
                             db.insert("room", null, values);
                             values.remove("places");
-                            values.remove("cityId");
                             values.remove("imgId");
+
+                            values.remove("cityId");
 
                             Log.v("After rooms in", "Rooms incerted");
                         }
                     }
+
+                    values.put("email", "user1@mail.ru");
+                    values.put("name", "User1");
+                    values.put("password", "user1pwd");
+                    values.put("admin", 0);
+                    db.insert("users", null, values);
+                    values.remove("email");
+                    values.remove("name");
+                    values.remove("password");
+                    values.remove("admin");
+
+                    values.put("email", "user2@mail.ru");
+                    values.put("name", "User2");
+                    values.put("password", "user2pwd");
+                    values.put("admin", 0);
+                    db.insert("users", null, values);
+                    values.remove("email");
+                    values.remove("name");
+                    values.remove("password");
+                    values.remove("admin");
+
+                    values.put("email", "admin1@mail.ru");
+                    values.put("name", "Andmin1");
+                    values.put("password", "admin1pwd");
+                    values.put("admin", 1);
+                    db.insert("users", null, values);
+                    values.remove("email");
+                    values.remove("name");
+                    values.remove("password");
+                    values.remove("admin");
+
                 } catch(SQLiteException e) {
                     Toast.makeText(MainActivity.this, "Init internal error", Toast.LENGTH_SHORT).show();
                 } finally {
