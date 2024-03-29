@@ -25,9 +25,11 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     private ArrayList<HotelRoom> rooms;
     private Context context;
 
+
     public MyAdapter(Context context, ArrayList<HotelRoom> rooms) {
         this.context = context;
         this.rooms = rooms;
+
     }
 
     @NonNull
