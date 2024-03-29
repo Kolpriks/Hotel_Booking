@@ -44,29 +44,16 @@ public class MainActivity extends AppCompatActivity {
         }
         // Presetting of in and out dates
         setDateInForms();
-        // Setting in and out buttons
-        Button buttonInDate = findViewById(R.id.buttonInDay);
-        Button buttonOutDate = findViewById(R.id.buttnOutDay);
+
+
         // Setting city spinner
         String [] cities = getCities();
         if (cities.length == 0) {
             cities = new String[] {"На данный момент нет городов с доступными отелями"};
         }
         spinnerCitySet(cities);
-
-        buttonInDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                inputInDateDialog();
-            }
-        });
-
-        buttonOutDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                inputOutDateDialog();
-            }
-        });
+        // Setting in and out buttons
+        setInOutButtons();
     }
 
     // Maybe put in some "presets" class
@@ -133,6 +120,25 @@ public class MainActivity extends AppCompatActivity {
         LocalDateTime dateTime = LocalDateTime.of(year, month, day, 12, 0);
         Instant instant = dateTime.atZone(ZoneId.systemDefault()).toInstant();
         return instant.getEpochSecond();
+    }
+
+    public void setInOutButtons() {
+        Button buttonInDate = findViewById(R.id.buttonInDay);
+        Button buttonOutDate = findViewById(R.id.buttnOutDay);
+
+        buttonInDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                inputInDateDialog();
+            }
+        });
+
+        buttonOutDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                inputOutDateDialog();
+            }
+        });
     }
 
     private void spinnerCitySet(String [] cities) {
