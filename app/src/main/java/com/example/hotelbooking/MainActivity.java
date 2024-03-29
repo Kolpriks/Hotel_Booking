@@ -176,6 +176,7 @@ public class MainActivity extends AppCompatActivity {
 
     public String [] getCities() {
         ArrayList<String> resultList = new ArrayList<String>();
+        resultList.add("Все города");
         DbHelper dbHelper = new DbHelper(MainActivity.this);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
