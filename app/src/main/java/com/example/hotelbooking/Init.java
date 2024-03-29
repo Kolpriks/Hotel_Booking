@@ -22,7 +22,7 @@ public class Init {
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
                 dbHelper.onUpgrade(db, 1, 1);
 
-                String [] cities = {"Moscow", "Санкт-Питербург", "Казань", "Тверь", "Калуга", "Волгоград"};
+                String [] cities = {"Москва", "Санкт-Питербург", "Казань", "Тверь", "Калуга", "Волгоград"};
                 int [] users = {1, 2, 3};
                 Calendar calendar = Calendar.getInstance();
                 long cityId;

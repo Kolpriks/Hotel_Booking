@@ -48,10 +48,15 @@ public class MainActivity extends AppCompatActivity {
 
         // Setting city spinner
         String [] cities = getCities();
+        for (String city : cities) {
+            Log.v("MainActivity", city);
+        }
+        Log.v("MainActivity", "Cities ended");
         if (cities.length == 0) {
             cities = new String[] {"На данный момент нет городов с доступными отелями"};
         }
-        spinnerCitySet(cities);
+        // TODO: Do all cities variation
+        setSpinnerCity(cities);
         // Setting in and out buttons
         setInOutButtons();
     }
@@ -141,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void spinnerCitySet(String [] cities) {
+    private void setSpinnerCity(String [] cities) {
         Spinner spinnerCity = findViewById(R.id.spinnerCity);
         ArrayAdapter<String> adapterCity = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, cities);
         adapterCity.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
