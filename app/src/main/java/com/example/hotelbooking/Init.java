@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.icu.util.Calendar;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.time.LocalDateTime;
@@ -13,15 +14,18 @@ import java.time.ZoneId;
 public class Init {
     private DbHelper dbHelper;
 
-    public Init(DbHelper dbHelper) {
+    String [] cities;
+
+    public Init(DbHelper dbHelper, String [] cities) {
         this.dbHelper = dbHelper;
+        this.cities = cities;
         new Thread(new Runnable() {
             @Override
             public void run() {
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
                 dbHelper.onUpgrade(db, 1, 1);
 
-                String [] cities = {"Москва", "Санкт-Питербург", "Казань", "Тверь", "Калуга", "Волгоград"};
+
                 int [] users = {1, 2, 3};
                 Calendar calendar = Calendar.getInstance();
                 long cityId;
@@ -89,6 +93,7 @@ public class Init {
                     values.remove("admin");
 
                     Log.v("After users in", "Users incerted");
+
 
                     long inDay = LocalDateTime.of(
                             calendar.get(Calendar.YEAR),

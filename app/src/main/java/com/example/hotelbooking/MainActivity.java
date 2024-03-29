@@ -19,6 +19,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -29,14 +30,28 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // App initialisation with db
+        String [] cities = {"Moscow", "Санкт-Питербург", "Казань", "Тверь", "Калуга", "Волгоград"};
         try {
             DbHelper dbHelper = new DbHelper(this);
-            Init init = new Init(dbHelper);
+            Init init = new Init(dbHelper, cities);
         } catch (SQLiteException e) {
             Log.e("MainActivity.onCreate", "Error whith connecting to database");
         }
-
-
+        // Presetting of in and out dates
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+        TextView editTextArr = findViewById(R.id.TextArrive);
+        editTextArr.setText(year + "." + (month + 1) + "." + dayOfMonth);
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
+        year = calendar.get(Calendar.YEAR);
+        month = calendar.get(Calendar.MONTH);
+        dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+        TextView editTextDep = findViewById(R.id.TextDeparture);
+        editTextDep.setText(year + "." + (month + 1) + "." + dayOfMonth);
+        // Setting in and out buttons
         Button buttonInDate = findViewById(R.id.buttonInDay);
         Button buttonOutDate = findViewById(R.id.buttnOutDay);
 
@@ -106,16 +121,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void inputInDateDialog() {
-        Calendar calendar = Calendar.getInstance();
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+
+
+        TextView editText = findViewById(R.id.TextArrive);
+        String dateStr = editText.getText().toString();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.M.d");
+        LocalDate date = LocalDate.parse(dateStr, formatter);
+
+        int year = date.getYear();
+        int month = date.getMonthValue() - 1;
+        int dayOfMonth = date.getMonthValue();
+
+        Log.v("MainActivity.inputInDateDialog", year + "." + month + "." + dayOfMonth);
 
         DatePickerDialog datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 TextView editText = findViewById(R.id.TextArrive);
-                editText.setText(year + "." + month + "." + dayOfMonth);
+                editText.setText(year + "." + (month + 1) + "." + dayOfMonth);
                 SharedPreferences prefs = getSharedPreferences("inDay", MODE_PRIVATE);
                 SharedPreferences.Editor editor = prefs.edit();
                 editor.putInt("Day", dayOfMonth);
@@ -128,16 +151,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void inputOutDateDialog() {
-        Calendar calendar = Calendar.getInstance();
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+        TextView editText = findViewById(R.id.TextDeparture);
+        String dateStr = editText.getText().toString();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.M.d");
+        LocalDate date = LocalDate.parse(dateStr, formatter);
+
+        int year = date.getYear();
+        int month = date.getMonthValue() - 1;
+        int dayOfMonth = date.getMonthValue();
+
+        Log.v("MainActivity.inputOutDateDialog", year + "." + month + "." + dayOfMonth);
 
         DatePickerDialog datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 TextView editText = findViewById(R.id.TextDeparture);
-                editText.setText(year + "." + month + "." + dayOfMonth);
+                editText.setText(year + "." + (month + 1) + "." + dayOfMonth);
                 SharedPreferences prefs = getSharedPreferences("outDay", MODE_PRIVATE);
                 SharedPreferences.Editor editor = prefs.edit();
                 editor.putInt("Day", dayOfMonth);
