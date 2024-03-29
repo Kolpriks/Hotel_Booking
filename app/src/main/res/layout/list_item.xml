@@ -9,44 +9,68 @@
 
 
     <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="323dp"
-        android:layout_height="202dp"
-        android:layout_marginTop="36dp"
-        android:layout_marginEnd="44dp"
-        android:src="@drawable/image1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="145dp"
-        android:layout_height="41dp"
-        android:layout_marginTop="256dp"
-        android:layout_marginEnd="220dp"
-
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
         android:id="@+id/imageView5"
         android:layout_width="373dp"
         android:layout_height="303dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="56dp"
         android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/framecard" />
 
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="80dp"
+        android:layout_height="39dp"
+        android:layout_marginTop="296dp"
+        android:layout_marginEnd="284dp"
+
+        android:text="Гости:"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="79dp"
+        android:layout_height="39dp"
+        android:layout_marginTop="296dp"
+        android:layout_marginEnd="204dp"
+
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="323dp"
+        android:layout_height="202dp"
+        android:layout_marginTop="76dp"
+        android:layout_marginEnd="44dp"
+        android:src="@drawable/image1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.appcompat.widget.AppCompatButton
         style="@style/CustomButtonStyle"
         android:layout_width="149dp"
         android:layout_height="39dp"
-        android:layout_marginTop="256dp"
+        android:layout_marginTop="296dp"
         android:layout_marginEnd="44dp"
         android:text="Забронировать"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textViewCity"
+        android:layout_width="141dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:text="Город"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
