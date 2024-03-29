@@ -4,15 +4,19 @@ import android.app.DatePickerDialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,6 +27,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     @Override
@@ -31,29 +36,23 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // App initialisation with db
-        String [] cities = {"Moscow", "Санкт-Питербург", "Казань", "Тверь", "Калуга", "Волгоград"};
         try {
             DbHelper dbHelper = new DbHelper(this);
-            Init init = new Init(dbHelper, cities);
+            Init init = new Init(dbHelper);
         } catch (SQLiteException e) {
             Log.e("MainActivity.onCreate", "Error whith connecting to database");
         }
         // Presetting of in and out dates
-        Calendar calendar = Calendar.getInstance();
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-        TextView editTextArr = findViewById(R.id.TextArrive);
-        editTextArr.setText(year + "." + (month + 1) + "." + dayOfMonth);
-        calendar.add(Calendar.DAY_OF_MONTH, 1);
-        year = calendar.get(Calendar.YEAR);
-        month = calendar.get(Calendar.MONTH);
-        dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-        TextView editTextDep = findViewById(R.id.TextDeparture);
-        editTextDep.setText(year + "." + (month + 1) + "." + dayOfMonth);
+        setDateInForms();
         // Setting in and out buttons
         Button buttonInDate = findViewById(R.id.buttonInDay);
         Button buttonOutDate = findViewById(R.id.buttnOutDay);
+        // Setting city spinner
+        String [] cities = getCities();
+        if (cities.length == 0) {
+            cities = new String[] {"На данный момент нет городов с доступными отелями"};
+        }
+        spinnerCitySet(cities);
 
         buttonInDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,6 +71,21 @@ public class MainActivity extends AppCompatActivity {
 
     // Maybe put in some "presets" class
 
+    public void setDateInForms() {
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+        TextView editTextArr = findViewById(R.id.TextArrive);
+        editTextArr.setText(year + "." + (month + 1) + "." + dayOfMonth);
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
+        year = calendar.get(Calendar.YEAR);
+        month = calendar.get(Calendar.MONTH);
+        dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+        TextView editTextDep = findViewById(R.id.TextDeparture);
+        editTextDep.setText(year + "." + (month + 1) + "." + dayOfMonth);
+    }
+
     public void toProfile(View view){
         Intent intent = new Intent(this, Profile.class);
         startActivity(intent);
@@ -80,7 +94,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void getInfo(View view){
         int places = 1;
-        String city = ((EditText) findViewById(R.id.editTextCity)).getText().toString();
         String guests = ((EditText) findViewById(R.id.editTextGuests)).getText().toString();
 
         Log.v("MainActivity.getInfo", "|" + guests + "|");
@@ -91,6 +104,8 @@ public class MainActivity extends AppCompatActivity {
             places = Integer.parseInt(guests);
         }
 
+        SharedPreferences prefsCity = getSharedPreferences("city", MODE_PRIVATE);
+        String city = prefsCity.getString("city", "");
         SharedPreferences prefsIn = getSharedPreferences("inDay", MODE_PRIVATE);
         long inDateInSec = dateToSec(prefsIn);
         SharedPreferences prefsOut = getSharedPreferences("outDay", MODE_PRIVATE);
@@ -120,9 +135,57 @@ public class MainActivity extends AppCompatActivity {
         return instant.getEpochSecond();
     }
 
+    private void spinnerCitySet(String [] cities) {
+        Spinner spinnerCity = findViewById(R.id.spinnerCity);
+        ArrayAdapter<String> adapterCity = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, cities);
+        adapterCity.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerCity.setAdapter(adapterCity);
+
+        spinnerCity.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int
+                    position, long id) {
+                String city = cities[position];
+
+                SharedPreferences prefs = getSharedPreferences("city", MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putString("city", city);
+                editor.apply();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                SharedPreferences prefs = getSharedPreferences("city", MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putString("city", "");
+                editor.apply();
+            }
+        });
+    }
+
+    public String [] getCities() {
+        ArrayList<String> resultList = new ArrayList<String>();
+        DbHelper dbHelper = new DbHelper(MainActivity.this);
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        String sql = "SELECT city FROM city";
+        Cursor cursor = db.rawQuery(sql, null);
+
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                int cityIdIndex = cursor.getColumnIndex("city");
+
+                if (cityIdIndex != -1) {
+                    resultList.add(cursor.getString(cityIdIndex));
+                }
+            } while (cursor.moveToNext());
+            cursor.close();
+            return resultList.toArray(new String[resultList.size()]);
+        }
+        return null;
+    }
+
     private void inputInDateDialog() {
-
-
         TextView editText = findViewById(R.id.TextArrive);
         String dateStr = editText.getText().toString();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.M.d");

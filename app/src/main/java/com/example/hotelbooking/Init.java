@@ -14,18 +14,15 @@ import java.time.ZoneId;
 public class Init {
     private DbHelper dbHelper;
 
-    String [] cities;
-
-    public Init(DbHelper dbHelper, String [] cities) {
+    public Init(DbHelper dbHelper) {
         this.dbHelper = dbHelper;
-        this.cities = cities;
         new Thread(new Runnable() {
             @Override
             public void run() {
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
                 dbHelper.onUpgrade(db, 1, 1);
 
-
+                String [] cities = {"Moscow", "Санкт-Питербург", "Казань", "Тверь", "Калуга", "Волгоград"};
                 int [] users = {1, 2, 3};
                 Calendar calendar = Calendar.getInstance();
                 long cityId;

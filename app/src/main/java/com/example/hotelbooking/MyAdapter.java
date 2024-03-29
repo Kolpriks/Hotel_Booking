@@ -43,8 +43,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         HotelRoom currentRoom = getRoom(position);
 
+        holder.textViewCity.setText(currentRoom.city);
         holder.imageView.setImageResource(R.drawable.image1 + currentRoom.imgId - 1);
-        holder.textView.setText(currentRoom.places + "");
+        holder.textViewGuests.setText(currentRoom.places + "");
     }
 
     @Override
@@ -58,14 +59,15 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-
+        public TextView textViewCity;
         public ImageView imageView;
-        public TextView textView;
+        public TextView textViewGuests;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            textViewCity = itemView.findViewById(R.id.textViewCity);
             imageView = itemView.findViewById(R.id.imageView);
-            textView = itemView.findViewById(R.id.textView);
+            textViewGuests = itemView.findViewById(R.id.textView);
         }
     }
 }

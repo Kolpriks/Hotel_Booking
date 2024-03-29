@@ -94,6 +94,7 @@ public class HotelsResults extends AppCompatActivity {
     }
 
     public void backOnMain(View view) {
-        finish();
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 }
