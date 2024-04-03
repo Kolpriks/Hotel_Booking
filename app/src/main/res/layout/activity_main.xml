@@ -21,7 +21,6 @@
         android:layout_width="123dp"
         android:layout_height="62dp"
         android:layout_marginTop="12dp"
-        android:onClick="backOnClaiming"
         android:text="Hotel- Booking!"
         android:textColor="#FDFDFD"
         android:textSize="24dp"
@@ -119,16 +118,15 @@
         android:text="Даты пребывания:"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="@+id/imageView4"
-        app:layout_constraintTop_toBottomOf="@+id/editTextCity" />
+        app:layout_constraintTop_toBottomOf="@+id/spinnerCity" />
 
-    <EditText
-        android:id="@+id/editTextCity"
+    <Spinner
+        android:id="@+id/spinnerCity"
         style="@style/CustomEditTextStyle"
         android:layout_width="329dp"
         android:layout_height="40dp"
         android:layout_marginStart="20dp"
         android:layout_marginTop="12dp"
-        android:hint="Москва"
         app:layout_constraintStart_toStartOf="@+id/imageView4"
         app:layout_constraintTop_toBottomOf="@+id/textView4" />
 

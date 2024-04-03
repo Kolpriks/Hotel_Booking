@@ -47,7 +47,7 @@ public class HotelsResults extends AppCompatActivity {
         String strGuests = bookingRequest.getGuests() + "";
         Log.v("String Arr and Dep", strArrival + "|" + strDeparture);
         // Getting table by BookingResults restrictions
-        if (city.isEmpty()) {
+        if (city.equals("Все города")) {
             String sql = "SELECT room.id AS id, city.city AS city, room.places AS places, room.imgId AS imgId " +
                     "FROM room " +
                     "JOIN city ON room.cityId = city.id " +
@@ -94,6 +94,7 @@ public class HotelsResults extends AppCompatActivity {
     }
 
     public void backOnMain(View view) {
-        finish();
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 }
