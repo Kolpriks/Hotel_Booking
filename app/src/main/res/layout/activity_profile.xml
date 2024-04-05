@@ -44,6 +44,7 @@
       tools:ignore="TouchTargetSizeCheck" />
 
   <androidx.appcompat.widget.AppCompatButton
+      android:id="@+id/appCompatButton"
       style="@style/CustomButtonStyle"
       android:layout_width="325dp"
       android:layout_height="50dp"
@@ -53,5 +54,16 @@
       android:text="Войти"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent" />
+
+  <TextView
+      android:id="@+id/textViewUsername"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="100dp"
+      android:layout_marginBottom="380dp"
+      android:text="Войдите в аккаунт"
+      android:textSize="24sp"
+      app:layout_constraintBottom_toTopOf="@+id/appCompatButton"
+      app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

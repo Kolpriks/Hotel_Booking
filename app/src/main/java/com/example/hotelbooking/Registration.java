@@ -45,11 +45,11 @@ public class Registration extends AppCompatActivity {
                     Toast.makeText(this, "Проблемы с подключением", Toast.LENGTH_SHORT).show();
                 }
                 Log.v("Registration.registerUser", "All without exceptions");
-                Intent intent = new Intent(this, Login.class);
-                startActivity(intent);
             }
+            Intent intent = new Intent(this, Login.class);
+            startActivity(intent);
         } catch (SQLiteException e) {
-            Log.e("MainActivity.onCreate", "Error whith connecting to database");
+            Log.e("Registration.registerUser", "Error whith connecting to database");
             return;
         }
         Log.v("Registration.registerUser", "Sucessful registration");

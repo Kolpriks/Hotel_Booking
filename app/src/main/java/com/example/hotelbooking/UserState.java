@@ -1,6 +1,7 @@
 package com.example.hotelbooking;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
@@ -14,9 +15,11 @@ public class UserState {
 
     private UserState(){}
     private DbHelper dbHelper;
+    private long id = -1;
     private String password;
     private String email;
     private String name;
+    private int admin = -1;
 
     public static UserState getInstance() {
         if (instance == null) {
@@ -24,15 +27,6 @@ public class UserState {
         }
         return instance;
     }
-
-//    private static final String CREATE_TABLE_USERS = "CREATE TABLE users (" +
-//            "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-//            "email TEXT NOT NULL UNIQUE," +
-//            "name TEXT NOT NULL," +
-//            "password TEXT NOT NULL," +
-//            "admin INTEGER NOT NULL" +
-//            ")";
-
 
     public String Register(String login, String name, String password, DbHelper dbHelper) {
         Log.v("UserState.Register", "Method reached");
@@ -44,7 +38,8 @@ public class UserState {
         values.put("password", password);
         values.put("admin", 0);
         try {
-            long newRowId = db.insertOrThrow("users", null, values);
+//            this.id = db.insertOrThrow("users", null, values);
+            db.insertOrThrow("users", null, values);
             Log.v("UserState.Register", "Users sucessfuly inserted");
         } catch (SQLiteConstraintException e) {
             Log.w("UserState.Register", "Такой пользователь уже существует", e);
@@ -58,13 +53,59 @@ public class UserState {
             values.remove("password");
             values.remove("admin");
             db.close();
+//            this.password = password;
+//            this.name = name;
+//            this.email = login;
+//            this.admin = 0;
         }
         return "";
     }
 
-    public String Login(String login, String password) {
+    public String Login(String login, String password, DbHelper dbHelper) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = null;
+        String sql = "SELECT id, email, name, password, admin " +
+                "FROM users " +
+                "WHERE email = ? AND password = ?";
+        cursor = db.rawQuery(sql, new String[] {login, password});
 
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                int idIndex = cursor.getColumnIndex("id");
+                int emailIdIndex = cursor.getColumnIndex("email");
+                int nameIndex = cursor.getColumnIndex("name");
+                int passwordIdIndex = cursor.getColumnIndex("password");
+                int adminIdIndex = cursor.getColumnIndex("admin");
+
+                if (idIndex != -1 && emailIdIndex != -1 && nameIndex != -1 && passwordIdIndex != -1 && adminIdIndex != -1) {
+                    this.id = cursor.getInt(idIndex);
+                    this.email = cursor.getString(emailIdIndex);
+                    this.name = cursor.getString(nameIndex);
+                    this.password = cursor.getString(passwordIdIndex);
+                    this.admin = cursor.getInt(adminIdIndex);
+                } else {
+                    Log.e("UserState.Login", "No such colums in users table");
+                    return "internalError";
+                }
+            } while (cursor.moveToNext());
+            cursor.close();
+        } else {
+            Log.e("UserState.Login", "No such email in db");
+            return "unexistingEmailorPassword";
+        }
         return "";
+    }
+
+    public void Logout() {
+        this.id = -1;
+        this.email = null;
+        this.name = null;
+        this.password = null;
+        this.admin = -1;
+    }
+
+    public long getId() {
+        return this.id;
     }
 
     public String getName() {
@@ -77,5 +118,13 @@ public class UserState {
 
     public String getPassword() {
         return password;
+    }
+
+    public int getAdmin() {
+        return this.admin;
+    }
+
+    public boolean isLoggedIn() {
+        return !(this.name == null) && !(this.password == null);
     }
 }
