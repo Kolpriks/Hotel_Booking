@@ -91,21 +91,22 @@ public class Init {
 
                     Log.v("After users in", "Users incerted");
 
-
+                    Log.v("Before first date", "First day setting");
                     long inDay = LocalDateTime.of(
                             calendar.get(Calendar.YEAR),
-                            calendar.get(Calendar.MONTH),
+                            calendar.get(Calendar.MONTH) + 1,
                             calendar.get(Calendar.DAY_OF_MONTH),
                             12,
                             0
                     ).atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
                     values.put("inDay", inDay);
 
-                    calendar.add(Calendar.DAY_OF_MONTH, 25);
+                    calendar.add(Calendar.DAY_OF_MONTH, 1);
 
+                    Log.v("Before second date", "Second day setting");
                     long outDay = LocalDateTime.of(
                             calendar.get(Calendar.YEAR),
-                            calendar.get(Calendar.MONTH),
+                            calendar.get(Calendar.MONTH) + 1,
                             calendar.get(Calendar.DAY_OF_MONTH),
                             12,
                             0
