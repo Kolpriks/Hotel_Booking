@@ -43,7 +43,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         HotelRoom currentRoom = getRoom(position);
-
         holder.textViewCity.setText(currentRoom.city);
         holder.imageView.setImageResource(R.drawable.image1 + currentRoom.imgId - 1);
         holder.textViewGuests.setText(currentRoom.places + "");
@@ -70,7 +69,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             textViewCity = itemView.findViewById(R.id.textViewCity);
             imageView = itemView.findViewById(R.id.imageView);
             textViewGuests = itemView.findViewById(R.id.textView);
-            buttonBook = imageView.findViewById(R.id.buttonBook);
+            buttonBook = itemView.findViewById(R.id.buttonBook);
         }
     }
 }

@@ -16,7 +16,6 @@ public class HotelRoom {
         this.imgId = imgId;
     }
 
-
     public int getId() {
         return this.id;
     }
