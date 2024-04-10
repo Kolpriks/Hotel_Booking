@@ -22,15 +22,15 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
-
+    private OnRoomClickListener listener;
     private ArrayList<HotelRoom> rooms;
     private Context context;
 
 
-    public MyAdapter(Context context, ArrayList<HotelRoom> rooms) {
+    public MyAdapter(Context context, ArrayList<HotelRoom> rooms, OnRoomClickListener listner) {
         this.context = context;
         this.rooms = rooms;
-
+        this.listener = listner;
     }
 
     @NonNull
@@ -43,9 +43,18 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         HotelRoom currentRoom = getRoom(position);
-        holder.textViewCity.setText(currentRoom.city);
-        holder.imageView.setImageResource(R.drawable.image1 + currentRoom.imgId - 1);
-        holder.textViewGuests.setText(currentRoom.places + "");
+        holder.textViewCity.setText(currentRoom.getCity());
+        holder.imageView.setImageResource(R.drawable.image1 + currentRoom.getImgId() - 1);
+        holder.textViewGuests.setText(currentRoom.getPlaces() + "");
+        holder.buttonBook.setOnClickListener(v -> {
+            if (listener != null) {
+                if (listener.onRoomClick(currentRoom)) {
+                    rooms.remove(position);
+                    notifyItemRemoved(position);
+                    notifyItemRangeChanged(position, rooms.size());
+                }
+            }
+        });
     }
 
     @Override

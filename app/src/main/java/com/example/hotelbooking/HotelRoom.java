@@ -4,10 +4,10 @@ import android.graphics.Bitmap;
 
 public class HotelRoom {
 
-    public int id;
-    public String city;
-    public int places;
-    int imgId;
+    private int id;
+    private String city;
+    private int places;
+    private int imgId;
 
     public HotelRoom(Integer id, String city, Integer places, Integer imgId) {
         this.id = id;
