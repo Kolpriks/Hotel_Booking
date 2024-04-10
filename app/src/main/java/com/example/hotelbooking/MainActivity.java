@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Log.v("MainActivity.onCreate", "|" + UserState.getInstance().isLoggedIn() + "|");
         // App initialisation with db
         try {
             DbHelper dbHelper = new DbHelper(this);

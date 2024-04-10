@@ -4,16 +4,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 public class HotelsResults extends AppCompatActivity {
+    private DbHelper dbHelper;
+    private BookingRequest bookingRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,7 +25,7 @@ public class HotelsResults extends AppCompatActivity {
         setContentView(R.layout.activity_hotels_results);
 
         Intent intent = getIntent();
-        DbHelper dbHelper = new DbHelper(HotelsResults.this);
+        dbHelper = new DbHelper(HotelsResults.this);
 
         ArrayList<HotelRoom> rooms = getRooms(intent, dbHelper);
 
@@ -29,7 +33,17 @@ public class HotelsResults extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        MyAdapter adapter = new MyAdapter(this, rooms);
+        MyAdapter adapter = new MyAdapter(this, rooms, new OnRoomClickListener() {
+            @Override
+            public boolean onRoomClick(HotelRoom room) {
+                if (!UserState.getInstance().isLoggedIn()) {
+                    Toast.makeText(HotelsResults.this, "Чтобы забронировать войдите в аккаунт", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+                reserveRoom(room);
+                return true;
+            }
+        });
         recyclerView.setAdapter(adapter);
     }
 
@@ -39,7 +53,7 @@ public class HotelsResults extends AppCompatActivity {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = null;
         // Parcing BookingRequest
-        BookingRequest bookingRequest = intent.getSerializableExtra("BR", BookingRequest.class);
+        bookingRequest = intent.getSerializableExtra("BR", BookingRequest.class);
         Log.v("HotelsResults.getRooms", bookingRequest.getCity() + "|" + bookingRequest.getInDay() + "|" + bookingRequest.getOutDay() + "|" + bookingRequest.getGuests());
         String city = bookingRequest.getCity();
         String strArrival = bookingRequest.getInDay() + "";
@@ -86,6 +100,22 @@ public class HotelsResults extends AppCompatActivity {
             return result;
         }
         return null;
+    }
+
+    public void reserveRoom(HotelRoom room) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put("inDay", bookingRequest.getInDay());
+        values.put("outDay", bookingRequest.getOutDay());
+        values.put("roomId", room.getId());
+        values.put("userId", UserState.getInstance().getId());
+        db.insert("reservations", null, values);
+        values.remove("inDay");
+        values.remove("outDay");
+        values.remove("outDay");
+        values.remove("outDay");
+
     }
 
     public void toProfile(View view){
