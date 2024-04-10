@@ -32,11 +32,22 @@ public class Registration extends AppCompatActivity {
             Toast.makeText(this, "Пароли должны совпадать", Toast.LENGTH_SHORT).show();
             return;
         }
+
+        String encryptedPassword;
+        try {
+            encryptedPassword = AESCrypt.encrypt(password);
+            Log.v("Login.loginUser", "Password encrypted");
+        } catch (Exception e) {
+            Log.e("Login.loginUser", "Encryption error: " + e.getMessage());
+            Toast.makeText(this, "Ошибка шифрования", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         Log.v("Registration.registerUser", "Validation passed");
         try {
             DbHelper dbHelper = new DbHelper(this);
             Log.v("Registration.registerUser", "Db connected");
-            String err = UserState.getInstance().Register(login, name, password, dbHelper);
+            String err = UserState.getInstance().Register(login, name, encryptedPassword, dbHelper);
             Log.v("Registration.registerUser", "UserInstance get");
             if (!err.isEmpty()) {
                 if (err.equals("loginExists")) {

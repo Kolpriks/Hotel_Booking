@@ -26,11 +26,22 @@ public class Login extends AppCompatActivity {
             Toast.makeText(this, "Заполните все поля", Toast.LENGTH_SHORT).show();
             return;
         }
+
+        String encryptedPassword;
+        try {
+            encryptedPassword = AESCrypt.encrypt(password);
+            Log.v("Login.loginUser", "Password encrypted");
+        } catch (Exception e) {
+            Log.e("Login.loginUser", "Encryption error: " + e.getMessage());
+            Toast.makeText(this, "Ошибка шифрования", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         Log.v("Login.loginUser", "Validation passed");
         try {
             DbHelper dbHelper = new DbHelper(this);
             Log.v("Login.loginUser", "Db connected");
-            String err = UserState.getInstance().Login(login, password, dbHelper);
+            String err = UserState.getInstance().Login(login, encryptedPassword, dbHelper);
             Log.v("Login.loginUser", "UserInstance get");
             if (!err.isEmpty()) {
                 if (err.equals("internalError")) {
@@ -46,6 +57,7 @@ public class Login extends AppCompatActivity {
             Log.e("Login.loginUser", "Error whith connecting to database");
             return;
         }
+
         String tmpUserData = UserState.getInstance().getId() + "|" +
                 UserState.getInstance().getEmail() + "|" +
                 UserState.getInstance().getName() + "|" +

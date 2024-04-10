@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hotelbooking.Item;
@@ -42,7 +43,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         HotelRoom currentRoom = getRoom(position);
-
         holder.textViewCity.setText(currentRoom.city);
         holder.imageView.setImageResource(R.drawable.image1 + currentRoom.imgId - 1);
         holder.textViewGuests.setText(currentRoom.places + "");
@@ -62,12 +62,14 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         public TextView textViewCity;
         public ImageView imageView;
         public TextView textViewGuests;
+        public AppCompatButton buttonBook;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             textViewCity = itemView.findViewById(R.id.textViewCity);
             imageView = itemView.findViewById(R.id.imageView);
             textViewGuests = itemView.findViewById(R.id.textView);
+            buttonBook = itemView.findViewById(R.id.buttonBook);
         }
     }
 }

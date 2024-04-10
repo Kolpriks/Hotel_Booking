@@ -182,7 +182,6 @@ public class MainActivity extends AppCompatActivity {
 
         String sql = "SELECT city FROM city";
         Cursor cursor = db.rawQuery(sql, null);
-
         if (cursor != null && cursor.moveToFirst()) {
             do {
                 int cityIdIndex = cursor.getColumnIndex("city");
@@ -192,8 +191,10 @@ public class MainActivity extends AppCompatActivity {
                 }
             } while (cursor.moveToNext());
             cursor.close();
+            db.close();
             return resultList.toArray(new String[resultList.size()]);
         }
+        db.close();
         return null;
     }
 
