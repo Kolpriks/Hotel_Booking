@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (SQLiteException e) {
             Log.e("MainActivity.onCreate", "Error whith connecting to database");
         }
+
         // Presetting of in and out dates
         setDateInForms();
 
@@ -69,14 +70,32 @@ public class MainActivity extends AppCompatActivity {
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
         int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+        String sMonth = (month + 1) + "";
+        String sDay = dayOfMonth + "";
+        if (month + 1 < 10) {
+            sMonth ="0" + sMonth;
+        }
+        if (dayOfMonth < 10) {
+            sDay ="0" + sDay;
+        }
         TextView editTextArr = findViewById(R.id.TextArrive);
-        editTextArr.setText(year + "." + (month + 1) + "." + dayOfMonth);
+        editTextArr.setText(year + "." + sMonth + "." + sDay);
+
         calendar.add(Calendar.DAY_OF_MONTH, 1);
+
         year = calendar.get(Calendar.YEAR);
         month = calendar.get(Calendar.MONTH);
         dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
         TextView editTextDep = findViewById(R.id.TextDeparture);
-        editTextDep.setText(year + "." + (month + 1) + "." + dayOfMonth);
+        sMonth = (month + 1) + "";
+        sDay = dayOfMonth + "";
+        if (month + 1 < 10) {
+            sMonth ="0" + sMonth;
+        }
+        if (dayOfMonth < 10) {
+            sDay ="0" + sDay;
+        }
+        editTextDep.setText(year + "." + sMonth + "." + sDay);
     }
 
     public void toProfile(View view){
@@ -102,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences prefsIn = getSharedPreferences("inDay", MODE_PRIVATE);
         long inDateInSec = dateToSec(prefsIn);
         SharedPreferences prefsOut = getSharedPreferences("outDay", MODE_PRIVATE);
-        long outDateInSec = dateToSec(prefsIn);
+        long outDateInSec = dateToSec(prefsOut);
 
         BookingRequest bookingRequest = new BookingRequest(city, inDateInSec, outDateInSec, places);
 
@@ -115,9 +134,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private long dateToSec(SharedPreferences prefs) {
-        int day = prefs.getInt("Day", -1);
-        int month = prefs.getInt("Month", -1);
-        int year = prefs.getInt("Year", -1);
+        Log.v("MainActivity.dateToSec", "Entered");
+        String date = prefs.getString("Date", null);
+        Log.v("MainActivity.dateToSec", date + "!!!");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
+        LocalDate lDate = LocalDate.parse(date, formatter);
+        Log.v("MainActivity.dateToSec", "Get formatter");
+        int year = lDate.getYear();
+        int month = lDate.getMonthValue();
+        int day = lDate.getDayOfMonth();
+        Log.v("MainActivity.dateToSec", "Dates in int");
+        Log.v("MainActivity.dateToSec", day + "|" + month + "|" + year);
 
         if (day == -1 || month == -1 || year == -1) {
             return 0;
@@ -202,12 +229,12 @@ public class MainActivity extends AppCompatActivity {
     private void inputInDateDialog() {
         TextView editText = findViewById(R.id.TextArrive);
         String dateStr = editText.getText().toString();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.M.d");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
         LocalDate date = LocalDate.parse(dateStr, formatter);
 
         int year = date.getYear();
         int month = date.getMonthValue() - 1;
-        int dayOfMonth = date.getMonthValue();
+        int dayOfMonth = date.getDayOfMonth();
 
         Log.v("MainActivity.inputInDateDialog", year + "." + month + "." + dayOfMonth);
 
@@ -215,12 +242,19 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 TextView editText = findViewById(R.id.TextArrive);
-                editText.setText(year + "." + (month + 1) + "." + dayOfMonth);
+                String sMonth = (month + 1) + "";
+                String sDay = dayOfMonth + "";
+                if (month + 1 < 10) {
+                    sMonth ="0" + sMonth;
+                }
+                if (dayOfMonth < 10) {
+                    sDay ="0" + sDay;
+                }
+                String date = year + "." + sMonth + "." + sDay;
+                editText.setText(date);
                 SharedPreferences prefs = getSharedPreferences("inDay", MODE_PRIVATE);
                 SharedPreferences.Editor editor = prefs.edit();
-                editor.putInt("Day", dayOfMonth);
-                editor.putInt("Month", month + 1);
-                editor.putInt("Year", year);
+                editor.putString("Date", date);
                 editor.apply();
             }
         }, year, month, dayOfMonth);
@@ -230,12 +264,12 @@ public class MainActivity extends AppCompatActivity {
     private void inputOutDateDialog() {
         TextView editText = findViewById(R.id.TextDeparture);
         String dateStr = editText.getText().toString();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.M.d");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
         LocalDate date = LocalDate.parse(dateStr, formatter);
 
         int year = date.getYear();
         int month = date.getMonthValue() - 1;
-        int dayOfMonth = date.getMonthValue();
+        int dayOfMonth = date.getDayOfMonth();
 
         Log.v("MainActivity.inputOutDateDialog", year + "." + month + "." + dayOfMonth);
 
@@ -243,12 +277,19 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 TextView editText = findViewById(R.id.TextDeparture);
-                editText.setText(year + "." + (month + 1) + "." + dayOfMonth);
+                String sMonth = (month + 1) + "";
+                String sDay = dayOfMonth + "";
+                if (month + 1 < 10) {
+                    sMonth ="0" + sMonth;
+                }
+                if (dayOfMonth < 10) {
+                    sDay ="0" + sDay;
+                }
+                String date = year + "." + sMonth + "." + sDay;
+                editText.setText(date);
                 SharedPreferences prefs = getSharedPreferences("outDay", MODE_PRIVATE);
                 SharedPreferences.Editor editor = prefs.edit();
-                editor.putInt("Day", dayOfMonth);
-                editor.putInt("Month", month + 1);
-                editor.putInt("Year", year);
+                editor.putString("Date", date);
                 editor.apply();
             }
         }, year, month, dayOfMonth);

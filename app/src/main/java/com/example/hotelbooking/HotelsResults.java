@@ -29,6 +29,8 @@ public class HotelsResults extends AppCompatActivity {
 
         ArrayList<HotelRoom> rooms = getRooms(intent, dbHelper);
 
+        Log.v("HotelsResults.onCreate", rooms.size() + "???");
+
         RecyclerView recyclerView = findViewById(R.id.hotelCards);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -56,9 +58,9 @@ public class HotelsResults extends AppCompatActivity {
         bookingRequest = intent.getSerializableExtra("BR", BookingRequest.class);
         Log.v("HotelsResults.getRooms", bookingRequest.getCity() + "|" + bookingRequest.getInDay() + "|" + bookingRequest.getOutDay() + "|" + bookingRequest.getGuests());
         String city = bookingRequest.getCity();
-        String strArrival = bookingRequest.getInDay() + "";
-        String strDeparture = bookingRequest.getOutDay() + "";
-        String strGuests = bookingRequest.getGuests() + "";
+        String strArrival = String.valueOf(bookingRequest.getInDay());
+        String strDeparture = String.valueOf(bookingRequest.getOutDay());
+        String strGuests = String.valueOf(bookingRequest.getGuests());
         Log.v("String Arr and Dep", strArrival + "|" + strDeparture);
         // Getting table by BookingResults restrictions
         if (city.equals("Все города")) {
@@ -66,9 +68,9 @@ public class HotelsResults extends AppCompatActivity {
                     "FROM room " +
                     "JOIN city ON room.cityId = city.id " +
                     "LEFT JOIN reservations ON room.id = reservations.roomId " +
-                    "WHERE room.places >= ?" +
-                    "AND ((? < COALESCE(reservations.inDay, 0) AND ? < COALESCE(reservations.outDay, 0)) " +
-                    "OR (? > COALESCE(reservations.inDay, 0) AND ? > COALESCE(reservations.outDay, 0))) ";
+                    "WHERE room.places >= ? " +
+                    "AND (((? < reservations.inDay OR reservations.inDay IS NULL) AND (? < reservations.inDay OR reservations.inDay IS NULL)) " +
+                    "OR ((? > reservations.outDay OR reservations.outDay IS NULL) AND (? > reservations.outDay OR reservations.outDay IS NULL))) ";
             cursor = db.rawQuery(sql, new String[] {strGuests, strArrival, strDeparture, strArrival, strDeparture});
         } else {
             String sql = "SELECT room.id AS id, city.city AS city, room.places AS places, room.imgId AS imgId " +
@@ -77,8 +79,8 @@ public class HotelsResults extends AppCompatActivity {
                     "LEFT JOIN reservations ON room.id = reservations.roomId " +
                     "WHERE room.places >= ? " +
                     "AND city.city = ?" +
-                    "AND ((? < COALESCE(reservations.inDay, 0) AND ? < COALESCE(reservations.outDay, 0)) " +
-                    "OR (? > COALESCE(reservations.inDay, 0) AND ? > COALESCE(reservations.outDay, 0))) ";
+                    "AND (((? < reservations.inDay OR reservations.inDay IS NULL) AND (? < reservations.inDay OR reservations.inDay IS NULL)) " +
+                    "OR ((? > reservations.outDay OR reservations.outDay IS NULL) AND (? > reservations.outDay OR reservations.outDay IS NULL))) ";
             cursor = db.rawQuery(sql, new String[] {strGuests, city, strArrival, strDeparture, strArrival, strDeparture});
         }
 
@@ -103,6 +105,9 @@ public class HotelsResults extends AppCompatActivity {
     }
 
     public void reserveRoom(HotelRoom room) {
+        if (dbHelper == null) {
+            dbHelper = new DbHelper(HotelsResults.this);
+        }
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
 
@@ -116,6 +121,7 @@ public class HotelsResults extends AppCompatActivity {
         values.remove("outDay");
         values.remove("outDay");
 
+        db.close();
     }
 
     public void toProfile(View view){

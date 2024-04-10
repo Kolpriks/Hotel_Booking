@@ -18,6 +18,8 @@ public class Profile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        DbHelper dbHelper = new DbHelper(Profile.this);
+
         button = findViewById(R.id.appCompatButton);
         username = findViewById(R.id.textViewUsername);
 
@@ -26,6 +28,11 @@ public class Profile extends AppCompatActivity {
             button.setText("Выйти");
         }
     }
+
+    public void loadReservations() {
+
+    }
+
     public void toLogin(View view){
         if (UserState.getInstance().isLoggedIn()) {
             UserState.getInstance().Logout();
@@ -41,5 +48,4 @@ public class Profile extends AppCompatActivity {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
-
 }
