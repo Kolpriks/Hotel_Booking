@@ -17,7 +17,9 @@ public class Init {
     public Init(DbHelper dbHelper) {
         this.dbHelper = dbHelper;
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        if (db.rawQuery("SELECT * FROM city", null) != null) {
+        Cursor сursor = db.rawQuery("SELECT * FROM city", null);
+        Log.v("Init", сursor + "");
+        if (сursor != null && сursor.moveToFirst()) {
             Log.v("Init", "Init unnesesery");
             return;
         }
