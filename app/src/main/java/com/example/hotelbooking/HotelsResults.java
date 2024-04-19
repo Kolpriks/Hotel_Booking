@@ -64,7 +64,7 @@ public class HotelsResults extends AppCompatActivity {
         Log.v("String Arr and Dep", strArrival + "|" + strDeparture);
         // Getting table by BookingResults restrictions
         if (city.equals("Все города")) {
-            String sql = "SELECT room.id AS id, city.city AS city, room.places AS places, room.imgId AS imgId " +
+            String sql = "SELECT room.id AS id, city.city AS city, room.places AS places, room.img AS img " +
                     "FROM room " +
                     "JOIN city ON room.cityId = city.id " +
                     "LEFT JOIN reservations ON room.id = reservations.roomId " +
@@ -73,12 +73,12 @@ public class HotelsResults extends AppCompatActivity {
                     "OR ((? > reservations.outDay OR reservations.outDay IS NULL) AND (? > reservations.outDay OR reservations.outDay IS NULL))) ";
             cursor = db.rawQuery(sql, new String[] {strGuests, strArrival, strDeparture, strArrival, strDeparture});
         } else {
-            String sql = "SELECT room.id AS id, city.city AS city, room.places AS places, room.imgId AS imgId " +
+            String sql = "SELECT room.id AS id, city.city AS city, room.places AS places, room.img AS img " +
                     "FROM room " +
                     "JOIN city ON room.cityId = city.id " +
                     "LEFT JOIN reservations ON room.id = reservations.roomId " +
                     "WHERE room.places >= ? " +
-                    "AND city.city = ?" +
+                    "AND city.city = ? " +
                     "AND (((? < reservations.inDay OR reservations.inDay IS NULL) AND (? < reservations.inDay OR reservations.inDay IS NULL)) " +
                     "OR ((? > reservations.outDay OR reservations.outDay IS NULL) AND (? > reservations.outDay OR reservations.outDay IS NULL))) ";
             cursor = db.rawQuery(sql, new String[] {strGuests, city, strArrival, strDeparture, strArrival, strDeparture});
@@ -89,13 +89,13 @@ public class HotelsResults extends AppCompatActivity {
                 int numberIndex = cursor.getColumnIndex("id");
                 int cityIdIndex = cursor.getColumnIndex("city");
                 int placesIndex = cursor.getColumnIndex("places");
-                int imgIdIndex = cursor.getColumnIndex("imgId");
+                int imgIndex = cursor.getColumnIndex("img");
 
-                if (numberIndex != -1 && cityIdIndex != -1 && placesIndex != -1 && imgIdIndex != -1) {
+                if (numberIndex != -1 && cityIdIndex != -1 && placesIndex != -1 && imgIndex != -1) {
                     result.add(new HotelRoom(cursor.getInt(numberIndex),
                             cursor.getString(cityIdIndex),
                             cursor.getInt(placesIndex),
-                            cursor.getInt(imgIdIndex)));
+                            cursor.getString(imgIndex)));
                 }
             } while (cursor.moveToNext());
             cursor.close();

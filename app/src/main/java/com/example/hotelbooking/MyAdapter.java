@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,7 +45,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         HotelRoom currentRoom = getRoom(position);
         holder.textViewCity.setText(currentRoom.getCity());
-        holder.imageView.setImageResource(R.drawable.image1 + currentRoom.getImgId() - 1);
+        holder.imageView.setImageBitmap(currentRoom.getImgBitmap());
         holder.textViewGuests.setText(currentRoom.getPlaces() + "");
         holder.buttonBook.setOnClickListener(v -> {
             if (listener != null) {

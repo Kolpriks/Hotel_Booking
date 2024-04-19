@@ -2,6 +2,7 @@ package com.example.hotelbooking;
 
 import android.app.DatePickerDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -22,6 +23,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -39,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         // App initialisation with db
         try {
             DbHelper dbHelper = new DbHelper(this);
-            Init init = new Init(dbHelper);
+            Init init = new Init(dbHelper, getApplicationContext());
         } catch (SQLiteException e) {
             Log.e("MainActivity.onCreate", "Error whith connecting to database");
         }
