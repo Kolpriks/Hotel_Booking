@@ -1,19 +1,21 @@
 package com.example.hotelbooking;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 
 public class HotelRoom {
 
     private int id;
     private String city;
     private int places;
-    private int imgId;
+    public String img;
 
-    public HotelRoom(Integer id, String city, Integer places, Integer imgId) {
+    public HotelRoom(Integer id, String city, Integer places, String img) {
         this.id = id;
         this.city = city;
         this.places = places;
-        this.imgId = imgId;
+        this.img = img;
     }
 
     public int getId() {
@@ -28,5 +30,13 @@ public class HotelRoom {
         return this.places;
     }
 
-    public int getImgId() {return this.imgId;}
+    public String getImg() {return this.img;}
+
+    public Bitmap getImgBitmap() {return decodeBase64ToBitmap(img);}
+
+    public Bitmap decodeBase64ToBitmap(String base64String) {
+        String pureBase64Encoded = base64String.substring(base64String.indexOf(",") + 1);
+        byte[] decodedBytes = android.util.Base64.decode(pureBase64Encoded, Base64.DEFAULT);
+        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+    }
 }

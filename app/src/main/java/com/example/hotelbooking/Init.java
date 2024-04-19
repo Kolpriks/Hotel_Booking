@@ -1,22 +1,39 @@
 package com.example.hotelbooking;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.icu.util.Calendar;
+import android.util.Base64;
 import android.util.Log;
 import com.example.hotelbooking.AESCrypt;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 
 public class Init {
     private DbHelper dbHelper;
 
-    public Init(DbHelper dbHelper) {
+    public Init(DbHelper dbHelper, Context context) {
         this.dbHelper = dbHelper;
+
+        String[] filenames = new String[] {"output1.txt", "output2.txt", "output3.txt"};
+        loadAssets(context, filenames);
+        ArrayList<String> images = new ArrayList<String>(){};
+        images = loadImages(context, filenames);
+
         SQLiteDatabase db = dbHelper.getWritableDatabase();
+        dbHelper.onUpgrade(db, 1, 1);
+
         Cursor сursor = db.rawQuery("SELECT * FROM city", null);
         Log.v("Init", сursor + "");
         if (сursor != null && сursor.moveToFirst()) {
@@ -38,22 +55,22 @@ public class Init {
                     values.put("cityId", cityId);
 
                     values.put("places", 2);
-                    values.put("imgId", 1);
+                    values.put("img", images.get(0).toString());
                     db.insert("room", null, values);
                     values.remove("places");
-                    values.remove("imgId");
+                    values.remove("img");
 
                     values.put("places", 3);
-                    values.put("imgId", 2);
+                    values.put("img", images.get(1).toString());
                     db.insert("room", null, values);
                     values.remove("places");
-                    values.remove("imgId");
+                    values.remove("img");
 
                     values.put("places", 4);
-                    values.put("imgId", 3);
+                    values.put("img", images.get(2).toString());
                     db.insert("room", null, values);
                     values.remove("places");
-                    values.remove("imgId");
+                    values.remove("img");
 
                     values.remove("cityId");
 
@@ -149,6 +166,86 @@ public class Init {
             Log.e("Init.Init", "Error with DB initialisation");
         } finally {
             db.close();
+        }
+    }
+
+    public ArrayList<String> loadImages(Context context, String[] filenames) {
+        ArrayList<String> images = new ArrayList<String>(){};
+        for (String filename : filenames) {
+            FileInputStream fis = null;
+            InputStreamReader isr = null;
+            BufferedReader bufferedReader = null;
+            StringBuilder builder = new StringBuilder();
+            try {
+                fis = context.openFileInput(filename);
+                isr = new InputStreamReader(fis);
+                bufferedReader = new BufferedReader(isr);
+
+                String line;
+                while ((line = bufferedReader.readLine()) != null) {
+                    builder.append(line);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (bufferedReader != null) {
+                    try {
+                        bufferedReader.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (isr != null) {
+                    try {
+                        isr.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (fis != null) {
+                    try {
+                        fis.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            images.add(builder.toString());
+        }
+
+        return images;
+    }
+
+    public void loadAssets(Context context, String[] filenames) {
+        InputStream is = null;
+        FileOutputStream fos = null;
+        for (String filename : filenames) {
+            try {
+                is = context.getAssets().open(filename);
+                fos = context.openFileOutput(filename, Context.MODE_PRIVATE);
+                byte[] buffer = new byte[1024];
+                int read;
+                while ((read = is.read(buffer)) != -1) {
+                    fos.write(buffer, 0, read);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (is != null) {
+                    try {
+                        is.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (fos != null) {
+                    try {
+                        fos.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
         }
     }
 }

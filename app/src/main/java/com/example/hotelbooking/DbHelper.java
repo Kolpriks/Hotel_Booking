@@ -19,7 +19,7 @@ public class DbHelper extends SQLiteOpenHelper {
             "id INTEGER PRIMARY KEY AUTOINCREMENT," +
             "places INTEGER NOT NULL," +
             "cityId INTEGER NOT NULL," +
-            "imgId INTEGER NOT NULL," +
+            "img TEXT NOT NULL," +
             // Foreign Key Constraint to ensure integrity
             "FOREIGN KEY(cityId) REFERENCES city(id)" +
             ")";
@@ -58,7 +58,6 @@ public class DbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Drop old tables if existed
         db.execSQL("DROP TABLE IF EXISTS city");
         db.execSQL("DROP TABLE IF EXISTS room");
         db.execSQL("DROP TABLE IF EXISTS users");
