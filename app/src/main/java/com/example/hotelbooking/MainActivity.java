@@ -34,16 +34,28 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final String PREFS_NAME = "MyPrefsFile";
+    private static final String FIRST_RUN = "firstRun";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        boolean isFirstRun = settings.getBoolean(FIRST_RUN, true);
+
         Log.v("MainActivity.onCreate", "|" + UserState.getInstance().isLoggedIn() + "|");
         // App initialisation with db
         try {
             DbHelper dbHelper = new DbHelper(this);
-            Init init = new Init(dbHelper, getApplicationContext());
+            if (isFirstRun) {
+                Init init = new Init(dbHelper, getApplicationContext());
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putBoolean(FIRST_RUN, false);
+                editor.apply();
+            }
         } catch (SQLiteException e) {
             Log.e("MainActivity.onCreate", "Error whith connecting to database");
         }

@@ -104,6 +104,7 @@ public class HotelsResults extends AppCompatActivity {
         return null;
     }
 
+
     public void reserveRoom(HotelRoom room) {
         if (dbHelper == null) {
             dbHelper = new DbHelper(HotelsResults.this);
