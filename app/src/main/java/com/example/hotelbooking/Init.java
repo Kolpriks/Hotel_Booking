@@ -34,12 +34,12 @@ public class Init {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         dbHelper.onUpgrade(db, 1, 1);
 
-        Cursor сursor = db.rawQuery("SELECT * FROM city", null);
-        Log.v("Init", сursor + "");
-        if (сursor != null && сursor.moveToFirst()) {
-            Log.v("Init", "Init unnesesery");
-            return;
-        }
+//        Cursor сursor = db.rawQuery("SELECT * FROM city", null);
+//        Log.v("Init", сursor + "");
+//        if (сursor != null && сursor.moveToFirst()) {
+//            Log.v("Init", "Init unnesesery");
+//            return;
+//        }
         dbHelper.onUpgrade(db, 1, 1);
         String [] cities = {"Москва", "Санкт-Питербург", "Казань", "Тверь", "Калуга", "Волгоград"};
         int [] users = {1, 2, 3};
@@ -113,7 +113,7 @@ public class Init {
                 String encryptedPassword = AESCrypt.encrypt("adminpwd");
                 values.put("password", encryptedPassword);
                 values.put("email", "admin@mail.ru");
-                values.put("name", "Andmin");
+                values.put("name", "Admin");
                 values.put("admin", 1);
                 db.insert("users", null, values);
                 values.remove("email");

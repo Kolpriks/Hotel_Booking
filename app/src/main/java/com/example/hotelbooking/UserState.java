@@ -127,4 +127,8 @@ public class UserState {
     public boolean isLoggedIn() {
         return !(this.name == null) && !(this.password == null);
     }
+
+    public boolean isAdmin() {
+        return this.admin == 1;
+    }
 }

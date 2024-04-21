@@ -53,20 +53,20 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/buttonBook"
-        style="@style/CustomButtonStyle"
+        style="@style/CustomButtonStyle2"
         android:layout_width="149dp"
         android:layout_height="39dp"
         android:layout_marginTop="296dp"
         android:layout_marginEnd="44dp"
-        android:text="Забронировать"
+        android:text="Удалить"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textViewCity"
-        android:layout_width="361dp"
-        android:layout_height="42dp"
+        android:layout_width="351dp"
+        android:layout_height="41dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="16dp"
         android:text="Город"
