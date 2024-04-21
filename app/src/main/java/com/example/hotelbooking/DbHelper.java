@@ -31,8 +31,8 @@ public class DbHelper extends SQLiteOpenHelper {
             "roomId INTEGER," +
             "userId INTEGER," +
             // Foreign Key Constraint to ensure integrity
-            "FOREIGN KEY(roomId) REFERENCES room(id)," +
-            "FOREIGN KEY(userId) REFERENCES users(id)" +
+            "FOREIGN KEY(roomId) REFERENCES room(id) ON DELETE CASCADE," +
+            "FOREIGN KEY(userId) REFERENCES users(id) ON DELETE CASCADE" +
             ")";
 
     private static final String CREATE_TABLE_USERS = "CREATE TABLE users (" +

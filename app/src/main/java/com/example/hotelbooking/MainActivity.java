@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
         Log.v("MainActivity.onCreate", "|" + UserState.getInstance().isLoggedIn() + "|");
         // App initialisation with db
+        Log.v("AppState", "|" + isFirstRun + "|");
         try {
             DbHelper dbHelper = new DbHelper(this);
             if (isFirstRun) {
@@ -80,7 +81,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Maybe put in some "presets" class
-
     public void setDateInForms() {
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
