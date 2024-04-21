@@ -2,6 +2,8 @@ package com.example.hotelbooking;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -12,6 +14,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
+
+import java.util.ArrayList;
 
 public class Profile extends AppCompatActivity {
     private AppCompatButton button;
@@ -47,8 +51,9 @@ public class Profile extends AppCompatActivity {
                 }
             });
         } else {
-            editHotelsButton.setVisibility(View.GONE);  // Скрываем кнопку, если пользователь не админ
+            editHotelsButton.setVisibility(View.GONE);
         }
+
     }
 
     public void goToAdminActivity(View view) {
