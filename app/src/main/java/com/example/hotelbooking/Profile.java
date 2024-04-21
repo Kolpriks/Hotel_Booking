@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -26,12 +27,37 @@ public class Profile extends AppCompatActivity {
         button = findViewById(R.id.appCompatButton);
         username = findViewById(R.id.textViewUsername);
 
+        AppCompatButton editHotelsButton = findViewById(R.id.editHotelsButton);
+
+        // Устанавливаем текст и обработчик для кнопки выхода/входа
         if (UserState.getInstance().isLoggedIn()) {
             username.setText(UserState.getInstance().getName());
             button.setText("Выйти");
         }
+        Log.v("НЕ РАБОТАЕТ", UserState.getInstance().getAdmin() + "");
+        // Проверяем, является ли пользователь администратором
+        if (UserState.getInstance().isAdmin()) {
+            editHotelsButton.setVisibility(View.VISIBLE);  // Делаем кнопку видимой
+            editHotelsButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Переход на активность администратора
+                    Intent intent = new Intent(Profile.this, AdminActivity.class);
+                    startActivity(intent);
+                }
+            });
+        } else {
+            editHotelsButton.setVisibility(View.GONE);  // Скрываем кнопку, если пользователь не админ
+        }
     }
-/*
+
+    public void goToAdminActivity(View view) {
+        Intent intent = new Intent(this, AdminActivity.class);
+        startActivity(intent);
+    }
+
+
+    /*
     private static final String CREATE_TABLE_RESERVATIONS = "CREATE TABLE reservations (" +
             "id INTEGER PRIMARY KEY AUTOINCREMENT," +
             "inDay INTEGER," +
