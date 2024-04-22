@@ -1,11 +1,6 @@
 package com.example.hotelbooking;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.Environment;
-import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,17 +11,16 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.io.File;
 import java.util.ArrayList;
 
 public class MyAdapter3 extends RecyclerView.Adapter<MyAdapter3.ViewHolder> {
-    private OnRoomClickListener listener;
-    private ArrayList<HotelRoom> rooms;
+    private OnReservationClickListner listener;
+    private ArrayList<Reservation> reservations;
     private Context context;
 
-    public MyAdapter3(Context context, ArrayList<HotelRoom> rooms, OnRoomClickListener listener) {
+    public MyAdapter3(Context context, ArrayList<Reservation> reservations, OnReservationClickListner listener) {
         this.context = context;
-        this.rooms = rooms;
+        this.reservations = reservations;
         this.listener = listener;
     }
 
@@ -39,16 +33,18 @@ public class MyAdapter3 extends RecyclerView.Adapter<MyAdapter3.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        HotelRoom currentRoom = getRoom(position);
-        holder.textViewCity.setText(currentRoom.getCity());
+        Reservation currentRoom = getRoom(position);
+        holder.textViewCity.setText("Город: " + currentRoom.getCity());
         holder.imageView.setImageBitmap(currentRoom.getImgBitmap());
         holder.textViewGuests.setText("Гости: " + currentRoom.getPlaces()); // Updated to include prefix as per your layout
+        holder.textViewIn.setText("Заезд: " + currentRoom.getInDayFormatted());
+        holder.textViewOut.setText("Выезд: " + currentRoom.getOutDayFormatted());
         holder.buttonBook.setOnClickListener(v -> {
             if (listener != null) {
-                if (listener.onRoomClick(currentRoom)) {
-                    rooms.remove(position);
+                if (listener.onReservationClick(currentRoom)) {
+                    reservations.remove(position);
                     notifyItemRemoved(position);
-                    notifyItemRangeChanged(position, rooms.size());
+                    notifyItemRangeChanged(position, reservations.size());
                 }
             }
         });
@@ -56,15 +52,17 @@ public class MyAdapter3 extends RecyclerView.Adapter<MyAdapter3.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return rooms.size();
+        return reservations.size();
     }
 
-    public HotelRoom getRoom(int position) {
-        return rooms.get(position % rooms.size());
+    public Reservation getRoom(int position) {
+        return reservations.get(position % reservations.size());
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView textViewCity;
+        public TextView textViewOut;
+        public TextView textViewIn;
         public ImageView imageView; // Assuming the ImageView to display image from your XML
         public TextView textViewGuests; // The TextView for guests info
         public AppCompatButton buttonBook; // Button for booking or other actions
@@ -72,9 +70,11 @@ public class MyAdapter3 extends RecyclerView.Adapter<MyAdapter3.ViewHolder> {
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             textViewCity = itemView.findViewById(R.id.textViewCity);
-            imageView = itemView.findViewById(R.id.imageView5); // Adjusted ID to match your layout
-            textViewGuests = itemView.findViewById(R.id.textView2); // Adjusted ID to match your layout
-            buttonBook = itemView.findViewById(R.id.buttonBook);
+            textViewOut = itemView.findViewById(R.id.textViewOut);
+            textViewIn = itemView.findViewById(R.id.textViewIn);
+            imageView = itemView.findViewById(R.id.imageView); // Adjusted ID to match your layout
+            textViewGuests = itemView.findViewById(R.id.textViewGuests); // Adjusted ID to match your layout
+            buttonBook = itemView.findViewById(R.id.buttonUnBook);
         }
     }
 }

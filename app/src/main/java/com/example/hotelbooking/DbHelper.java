@@ -31,8 +31,8 @@ public class DbHelper extends SQLiteOpenHelper {
             "roomId INTEGER," +
             "userId INTEGER," +
             // Foreign Key Constraint to ensure integrity
-            "FOREIGN KEY(roomId) REFERENCES room(id) ON DELETE CASCADE," +
-            "FOREIGN KEY(userId) REFERENCES users(id) ON DELETE CASCADE" +
+            "FOREIGN KEY(roomId) REFERENCES room(id)," +
+            "FOREIGN KEY(userId) REFERENCES users(id)" +
             ")";
 
     private static final String CREATE_TABLE_USERS = "CREATE TABLE users (" +
@@ -42,6 +42,13 @@ public class DbHelper extends SQLiteOpenHelper {
             "password TEXT NOT NULL," +
             "admin INTEGER NOT NULL" +
             ")";
+
+    private static final String RESERVATIONS_TRIGGER = "CREATE TRIGGER Delete_Reservations_After_Room_Deletion " +
+            "AFTER DELETE ON room " +
+            "FOR EACH ROW " +
+            "BEGIN " +
+            "    DELETE FROM reservations WHERE roomId = OLD.id; " +
+            "END;";
 
     public DbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -54,6 +61,7 @@ public class DbHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_ROOM);
         db.execSQL(CREATE_TABLE_USERS);
         db.execSQL(CREATE_TABLE_RESERVATIONS);
+        db.execSQL(RESERVATIONS_TRIGGER);
     }
 
     @Override
