@@ -29,24 +29,24 @@ public class HotelsResults extends AppCompatActivity {
 
         ArrayList<HotelRoom> rooms = getRooms(intent, dbHelper);
 
-        Log.v("HotelsResults.onCreate", rooms.size() + "???");
-
         RecyclerView recyclerView = findViewById(R.id.hotelCards);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        MyAdapter adapter = new MyAdapter(this, rooms, new OnRoomClickListener() {
-            @Override
-            public boolean onRoomClick(HotelRoom room) {
-                if (!UserState.getInstance().isLoggedIn()) {
-                    Toast.makeText(HotelsResults.this, "Чтобы забронировать войдите в аккаунт", Toast.LENGTH_SHORT).show();
-                    return false;
+        if (rooms != null) {
+            Log.v("HotelsResults.onCreate", rooms.size() + "???");
+            MyAdapter adapter = new MyAdapter(this, rooms, new OnRoomClickListener() {
+                @Override
+                public boolean onRoomClick(HotelRoom room) {
+                    if (!UserState.getInstance().isLoggedIn()) {
+                        Toast.makeText(HotelsResults.this, "Чтобы забронировать войдите в аккаунт", Toast.LENGTH_SHORT).show();
+                        return false;
+                    }
+                    reserveRoom(room);
+                    return true;
                 }
-                reserveRoom(room);
-                return true;
-            }
-        });
-        recyclerView.setAdapter(adapter);
+            });
+            recyclerView.setAdapter(adapter);
+        }
     }
 
     public ArrayList<HotelRoom> getRooms(Intent intent, DbHelper dbHelper) {

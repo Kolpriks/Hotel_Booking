@@ -43,6 +43,13 @@ public class DbHelper extends SQLiteOpenHelper {
             "admin INTEGER NOT NULL" +
             ")";
 
+    private static final String RESERVATIONS_TRIGGER = "CREATE TRIGGER Delete_Reservations_After_Room_Deletion " +
+            "AFTER DELETE ON room " +
+            "FOR EACH ROW " +
+            "BEGIN " +
+            "    DELETE FROM reservations WHERE roomId = OLD.id; " +
+            "END;";
+
     public DbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -54,6 +61,7 @@ public class DbHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_ROOM);
         db.execSQL(CREATE_TABLE_USERS);
         db.execSQL(CREATE_TABLE_RESERVATIONS);
+        db.execSQL(RESERVATIONS_TRIGGER);
     }
 
     @Override

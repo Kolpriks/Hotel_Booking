@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
         Log.v("MainActivity.onCreate", "|" + UserState.getInstance().isLoggedIn() + "|");
         // App initialisation with db
+        Log.v("AppState", "|" + isFirstRun + "|");
         try {
             DbHelper dbHelper = new DbHelper(this);
             if (isFirstRun) {
@@ -56,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
                 editor.putBoolean(FIRST_RUN, false);
                 editor.apply();
             }
+//            Init init = new Init(dbHelper, getApplicationContext());
         } catch (SQLiteException e) {
             Log.e("MainActivity.onCreate", "Error whith connecting to database");
         }
@@ -80,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Maybe put in some "presets" class
-
     public void setDateInForms() {
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
@@ -95,7 +96,13 @@ public class MainActivity extends AppCompatActivity {
             sDay ="0" + sDay;
         }
         TextView editTextArr = findViewById(R.id.TextArrive);
-        editTextArr.setText(year + "." + sMonth + "." + sDay);
+        String date = year + "." + sMonth + "." + sDay;
+        editTextArr.setText(date);
+
+        SharedPreferences prefs = getSharedPreferences("inDay", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("Date", date);
+        editor.apply();
 
         calendar.add(Calendar.DAY_OF_MONTH, 1);
 
@@ -111,7 +118,13 @@ public class MainActivity extends AppCompatActivity {
         if (dayOfMonth < 10) {
             sDay ="0" + sDay;
         }
-        editTextDep.setText(year + "." + sMonth + "." + sDay);
+        date = year + "." + sMonth + "." + sDay;
+        editTextDep.setText(date);
+
+        prefs = getSharedPreferences("outDay", MODE_PRIVATE);
+        editor = prefs.edit();
+        editor.putString("Date", date);
+        editor.apply();
     }
 
     public void toProfile(View view){

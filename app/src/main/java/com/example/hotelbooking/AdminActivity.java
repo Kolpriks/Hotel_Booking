@@ -28,24 +28,24 @@ public class AdminActivity extends AppCompatActivity {
 
         ArrayList<HotelRoom> rooms = getRooms(dbHelper);
 
-        Log.v("HotelsResults.onCreate", rooms.size() + "???");
-
         RecyclerView recyclerView = findViewById(R.id.hotelCards);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        MyAdapter2 adapter = new MyAdapter2(this, rooms, new OnRoomClickListener() {
-            @Override
-            public boolean onRoomClick(HotelRoom room) {
-                if (!UserState.getInstance().isLoggedIn()) {
-                    Toast.makeText(AdminActivity.this, "Чтобы забронировать войдите в аккаунт", Toast.LENGTH_SHORT).show();
-                    return false;
+        if (rooms != null) {
+            Log.v("HotelsResults.onCreate", rooms.size() + "???");
+            MyAdapter2 adapter = new MyAdapter2(this, rooms, new OnRoomClickListener() {
+                @Override
+                public boolean onRoomClick(HotelRoom room) {
+                    if (!UserState.getInstance().isLoggedIn()) {
+                        Toast.makeText(AdminActivity.this, "Чтобы забронировать войдите в аккаунт", Toast.LENGTH_SHORT).show();
+                        return false;
+                    }
+                    deleteRoom(room);
+                    return true;
                 }
-                reserveRoom(room);
-                return true;
-            }
-        });
-        recyclerView.setAdapter(adapter);
+            });
+            recyclerView.setAdapter(adapter);
+        }
     }
 
     public ArrayList<HotelRoom> getRooms(DbHelper dbHelper) {
@@ -79,24 +79,13 @@ public class AdminActivity extends AppCompatActivity {
         return null;
     }
 
-
-    public void reserveRoom(HotelRoom room) {
+    // TODO: Do cascade delition of room reservetions connected on room_id
+    public void deleteRoom(HotelRoom room) {
         if (dbHelper == null) {
             dbHelper = new DbHelper(AdminActivity.this);
         }
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-
-        values.put("inDay", bookingRequest.getInDay());
-        values.put("outDay", bookingRequest.getOutDay());
-        values.put("roomId", room.getId());
-        values.put("userId", UserState.getInstance().getId());
-        db.insert("reservations", null, values);
-        values.remove("inDay");
-        values.remove("outDay");
-        values.remove("outDay");
-        values.remove("outDay");
-
+        db.delete("room", "id = ?", new String[]{String.valueOf(room.getId())});
         db.close();
     }
 
